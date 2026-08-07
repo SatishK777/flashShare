@@ -1,7 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/s/:path*", "destination": "/index.html" },
-    { "source": "/create", "destination": "/index.html" },
-    { "source": "/dashboard", "destination": "/index.html" }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "/index.html" }
   ]
 }
