@@ -87,8 +87,9 @@ export class DownloadService {
 
     const completed = await downloadRepository.markCompleted(downloadId, totalBytes);
 
-    // Log analytics
+    // Log analytics and record download count limit
     await analyticsService.logEvent(download.shareId, 'download_completed', null, download.receiverIpHash, download.userAgent || undefined);
+    await shareService.recordDownload(download.shareId);
 
     try {
       const io = getIO();

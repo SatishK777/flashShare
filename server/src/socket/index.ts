@@ -4,6 +4,7 @@ import { Server as HttpServer } from "http";
 import { env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 import { EVENTS } from "./events.js";
+import { shareService } from "../services/share.service.js";
 
 let ioInstance: SocketIOServer;
 
@@ -73,6 +74,17 @@ export const initializeSocket = (httpServer: HttpServer) => {
 
     socket.on(EVENTS.WEBRTC_REJECTED, (data: { targetSocketId: string }) => {
       ioInstance.to(data.targetSocketId).emit(EVENTS.WEBRTC_REJECTED, { receiverSocketId: socket.id });
+    });
+
+    socket.on(EVENTS.DOWNLOAD_STARTED, (roomId: string) => {
+      socket.to(roomId).emit(EVENTS.DOWNLOAD_STARTED, { timestamp: new Date() });
+      logger.info(`Download started in socket room ${roomId}`);
+    });
+
+    socket.on(EVENTS.DOWNLOAD_COMPLETED, async (roomId: string) => {
+      socket.to(roomId).emit(EVENTS.DOWNLOAD_COMPLETED, { timestamp: new Date() });
+      logger.info(`Download completed in socket room ${roomId}`);
+      await shareService.recordDownload(roomId);
     });
 
     socket.on("disconnecting", () => {

@@ -5,6 +5,7 @@ import { generateToken, hashPassword, verifyPassword } from '../utils/crypto.js'
 import { calculateExpiry } from '../utils/helpers.js';
 import { AppError } from '../api/middlewares/errorHandler.js';
 import { storage } from '../config/storage.js';
+import { logger } from '../utils/logger.js';
 
 export interface CreateShareSettings {
   expiresInMinutes: number;
@@ -64,6 +65,17 @@ export class ShareService {
     const share = await shareRepository.findByToken(token);
     if (!share) {
       throw new AppError(404, 'Share not found');
+    }
+
+    if (share.status === 'completed' || share.status === 'expired' || share.status === 'cancelled') {
+      throw new AppError(410, `Share is no longer available (status: ${share.status})`);
+    }
+
+    if (share.maxDownloads !== -1 && share.downloadCount >= share.maxDownloads) {
+      if (share.status !== 'completed') {
+        await shareRepository.updateStatus(share.id, 'completed');
+      }
+      throw new AppError(410, 'Maximum download limit reached');
     }
 
     if (new Date() > share.expiresAt) {
@@ -142,6 +154,27 @@ export class ShareService {
       ...share,
       files,
     };
+  }
+
+  async recordDownload(shareId: string) {
+    const share = await shareRepository.findById(shareId);
+    if (!share) return;
+
+    const updatedCount = share.downloadCount + 1;
+    await shareRepository.incrementDownloadCount(shareId);
+
+    if (share.maxDownloads !== -1 && updatedCount >= share.maxDownloads) {
+      await shareRepository.updateStatus(shareId, 'completed');
+      logger.info(`Share ${shareId} marked completed after reaching max downloads (${share.maxDownloads})`);
+
+      if (share.autoDeletePolicy === 'after_download') {
+        const files = await fileRepository.findByShareId(shareId);
+        const keysToDelete = files.map((f: { storagePath: string }) => f.storagePath);
+        if (keysToDelete.length > 0) {
+          await storage.deleteMany(keysToDelete);
+        }
+      }
+    }
   }
 }
 
