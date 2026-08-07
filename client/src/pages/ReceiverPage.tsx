@@ -49,7 +49,10 @@ const getFileIcon = (type: string) => {
 };
 
 export const ReceiverPage: React.FC = () => {
-  const { token } = useParams<{ token: string }>();
+  const { token: rawToken } = useParams<{ token: string }>();
+  // Strip any trailing #key or ?query attached by router hash matching
+  const token = rawToken ? rawToken.split('#')[0].split('?')[0] : '';
+
   const [state, setState] = useState<ReceiverState>('loading');
   const [shareData, setShareData] = useState<ShareData | null>(null);
   const [password, setPassword] = useState('');
@@ -63,9 +66,18 @@ export const ReceiverPage: React.FC = () => {
   const [p2pProgress, setP2pProgress] = useState<P2PTransferProgress | null>(null);
   const webrtcRef = useRef<WebRTCTransfer | null>(null);
 
-  // Extract encryption key from URL hash (e.g. #/s/token#encryptionKey -> encryptionKey)
-  const hashParts = window.location.hash.split('#');
-  const hash = hashParts.length > 2 ? hashParts[hashParts.length - 1] : (hashParts.length === 2 && !hashParts[1].startsWith('/') ? hashParts[1] : '');
+  // Extract encryption key (handles both HashRouter and BrowserRouter hash formats)
+  const getEncryptionKey = (): string => {
+    if (rawToken && rawToken.includes('#')) {
+      return rawToken.split('#')[1];
+    }
+    const hashParts = window.location.hash.split('#');
+    if (hashParts.length > 2) return hashParts[hashParts.length - 1];
+    if (hashParts.length === 2 && !hashParts[1].startsWith('/')) return hashParts[1];
+    return '';
+  };
+
+  const hash = getEncryptionKey();
   const isEncrypted = !!hash;
 
   const fetchShare = useCallback(async () => {
