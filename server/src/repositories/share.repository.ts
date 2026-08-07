@@ -1,8 +1,11 @@
 // Share Repository
 import { prisma } from '../config/database.js';
-import { Prisma, Share, File } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
+type Share = Prisma.ShareGetPayload<object>;
+type File = Prisma.FileGetPayload<object>;
 export type ShareWithFiles = Share & { files: File[] };
+
 
 export class ShareRepository {
   async create(data: Prisma.ShareCreateInput): Promise<Share> {

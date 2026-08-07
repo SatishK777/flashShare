@@ -60,7 +60,7 @@ export class DownloadController {
       if (!share.showFilenames) {
         const ext = file.originalName.includes('.') ? `.${file.originalName.split('.').pop()}` : '';
         // Find index of file to match generic naming
-        const index = share.files?.findIndex((f) => f.id === file.id) ?? 0;
+        const index = share.files?.findIndex((f: { id: string }) => f.id === file.id) ?? 0;
         downloadName = `file_${index + 1}${ext}`;
       }
 

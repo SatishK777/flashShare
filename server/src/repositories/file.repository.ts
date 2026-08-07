@@ -1,6 +1,8 @@
-// File Repository
+import { Prisma } from '@prisma/client';
 import { prisma } from '../config/database.js';
-import { Prisma, File } from '@prisma/client';
+
+type File = Prisma.FileGetPayload<object>;
+
 
 export class FileRepository {
   async create(data: Prisma.FileCreateInput): Promise<File> {

@@ -1,5 +1,8 @@
-import { Prisma, Download } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../config/database.js';
+
+type Download = Prisma.DownloadGetPayload<object>;
+
 
 export class DownloadRepository {
   /**

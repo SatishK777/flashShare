@@ -128,13 +128,13 @@ export class ShareService {
     
     // Respect showFilenames setting
     if (!share.showFilenames) {
-      files = files.map((file, index) => {
+      files = files.map((file, index: number) => {
         // Extract extension from original name if possible
         const ext = file.originalName.includes('.') ? `.${file.originalName.split('.').pop()}` : '';
         return {
           ...file,
           originalName: `file_${index + 1}${ext}`,
-        };
+        } as typeof file;
       });
     }
 

@@ -16,7 +16,7 @@ export const prisma = new PrismaClient({
   ],
 });
 
-prisma.$on("error", (e) => {
+prisma.$on("error", (e: { message: string; target: string }) => {
   logger.error(e, "Prisma Error");
 });
 
@@ -24,7 +24,7 @@ export const connectDB = async () => {
   try {
     await prisma.$connect();
     logger.info("✅ Database connected successfully");
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error(error, "❌ Database connection failed");
     process.exit(1);
   }
