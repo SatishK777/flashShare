@@ -46,7 +46,7 @@ export const useShareStore = create<ShareState>((set) => ({
   })),
   
   setShare: ({ shareId, token, encryptionKey, expiresAt }) => {
-    const shareUrl = `${window.location.origin}/s/${token}#${encryptionKey}`;
+    const shareUrl = `${window.location.origin}/#/s/${token}#${encryptionKey}`;
     set({ shareId, token, encryptionKey, expiresAt, shareUrl });
   },
   

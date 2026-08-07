@@ -63,8 +63,9 @@ export const ReceiverPage: React.FC = () => {
   const [p2pProgress, setP2pProgress] = useState<P2PTransferProgress | null>(null);
   const webrtcRef = useRef<WebRTCTransfer | null>(null);
 
-  // Extract encryption key from URL hash (never sent to server)
-  const hash = window.location.hash.replace('#', '');
+  // Extract encryption key from URL hash (e.g. #/s/token#encryptionKey -> encryptionKey)
+  const hashParts = window.location.hash.split('#');
+  const hash = hashParts.length > 2 ? hashParts[hashParts.length - 1] : (hashParts.length === 2 && !hashParts[1].startsWith('/') ? hashParts[1] : '');
   const isEncrypted = !!hash;
 
   const fetchShare = useCallback(async () => {

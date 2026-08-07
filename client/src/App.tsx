@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RootLayout } from './components/layout/RootLayout';
 import { LandingPage } from './pages/LandingPage';
@@ -26,7 +26,7 @@ export const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             <Route path="/" element={<RootLayout />}>
               <Route index element={<LandingPage />} />
@@ -36,7 +36,7 @@ export const App: React.FC = () => {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </ErrorBoundary>
     </QueryClientProvider>
   );
