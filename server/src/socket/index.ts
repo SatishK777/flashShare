@@ -18,7 +18,7 @@ export const getIO = () => {
 export const initializeSocket = (httpServer: HttpServer) => {
   ioInstance = new SocketIOServer(httpServer, {
     cors: {
-      origin: env.CORS_ORIGIN,
+      origin: true,
       methods: ["GET", "POST"],
       credentials: true,
     },

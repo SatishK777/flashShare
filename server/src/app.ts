@@ -14,7 +14,10 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: env.CORS_ORIGIN,
+    origin: (origin, callback) => {
+      // Allow all origins dynamically while supporting credentials: true
+      callback(null, true);
+    },
     credentials: true,
   })
 );

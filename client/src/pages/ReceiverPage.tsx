@@ -80,13 +80,20 @@ export const ReceiverPage: React.FC = () => {
   const hash = getEncryptionKey();
   const isEncrypted = !!hash;
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   const fetchShare = useCallback(async () => {
     if (!token) return;
     try {
       const res = await fetch(`${API_BASE}/shares/${token}`);
 
       if (res.status === 404) { setState('not_found'); return; }
-      if (res.status === 410) { setState('expired'); return; }
+      if (res.status === 410) {
+        const json = await res.json().catch(() => ({}));
+        setErrorMessage(json.error?.message || json.message || 'This share is no longer available.');
+        setState('expired');
+        return;
+      }
       if (!res.ok) throw new Error('Failed to fetch share');
 
       const json = await res.json();
@@ -580,8 +587,8 @@ export const ReceiverPage: React.FC = () => {
               <div className="receiver-state-icon receiver-error-icon">
                 <Clock className="text-error-500" size={32} />
               </div>
-              <h2 className="receiver-state-title">This share has expired</h2>
-              <p className="receiver-state-copy">The files are no longer available for download.</p>
+              <h2 className="receiver-state-title">Share Unavailable</h2>
+              <p className="receiver-state-copy">{errorMessage || 'The files are no longer available for download.'}</p>
               <Link to="/"><Button className="receiver-secondary-button">Return Home</Button></Link>
             </motion.div>
           )}
