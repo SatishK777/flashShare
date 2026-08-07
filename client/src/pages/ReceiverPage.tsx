@@ -9,6 +9,8 @@ import { formatBytes } from '../components/upload/FileList';
 import { joinRoom, leaveRoom, getSocket, SOCKET_EVENTS } from '../services/socket';
 import { WebRTCTransfer, isWebRTCSupported, P2PTransferProgress } from '../services/webrtc';
 
+import { API_BASE } from '../services/api';
+
 type ReceiverState = 'loading' | 'password_required' | 'ready' | 'downloading' | 'completed' | 'expired' | 'not_found';
 
 // Matches actual API response shape from GET /api/shares/:token
@@ -68,7 +70,7 @@ export const ReceiverPage: React.FC = () => {
   const fetchShare = useCallback(async () => {
     if (!token) return;
     try {
-      const res = await fetch(`/api/shares/${token}`);
+      const res = await fetch(`${API_BASE}/shares/${token}`);
 
       if (res.status === 404) { setState('not_found'); return; }
       if (res.status === 410) { setState('expired'); return; }
@@ -215,7 +217,7 @@ export const ReceiverPage: React.FC = () => {
 
     try {
       // Verify password first
-      const verifyRes = await fetch(`/api/shares/${token}/verify-password`, {
+      const verifyRes = await fetch(`${API_BASE}/shares/${token}/verify-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
@@ -228,7 +230,7 @@ export const ReceiverPage: React.FC = () => {
       if (!verifyRes.ok) throw new Error('Verification failed');
 
       // Password correct — fetch share data
-      const res = await fetch(`/api/shares/${token}`);
+      const res = await fetch(`${API_BASE}/shares/${token}`);
       if (!res.ok) throw new Error('Failed to fetch share');
 
       const json = await res.json();

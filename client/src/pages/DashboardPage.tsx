@@ -65,11 +65,13 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
 };
 
+import { API_BASE } from '../services/api';
+
 export const DashboardPage: React.FC = () => {
   const { data, isLoading, isError, isFetching } = useQuery<DashboardData>({
     queryKey: ['dashboard'],
     queryFn: async () => {
-      const res = await fetch('/api/dashboard');
+      const res = await fetch(`${API_BASE}/dashboard`);
       if (!res.ok) throw new Error('Failed to fetch dashboard data');
       const json = await res.json();
       return json.data;

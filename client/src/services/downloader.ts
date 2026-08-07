@@ -1,15 +1,14 @@
 import { decryptChunk } from './encryption';
-
-
+import { API_BASE } from './api';
 
 export interface DownloadProgress {
-  fileId: string;
+  fileId?: string;
   fileName: string;
   totalChunks: number;
   downloadedChunks: number;
   totalSize: number;
   downloadedSize: number;
-  status: 'pending' | 'downloading' | 'decrypting' | 'completed' | 'failed';
+  status: 'pending' | 'downloading' | 'decrypting' | 'completed' | 'failed' | 'error';
 }
 
 export async function downloadAndDecryptFile(
@@ -19,13 +18,13 @@ export async function downloadAndDecryptFile(
   fileSize: number,
   chunkCount: number,
   encryptionKey: CryptoKey | null,
-  onProgress: (progress: DownloadProgress) => void
+  onProgress?: (progress: DownloadProgress) => void
 ): Promise<Blob> {
   const chunks: Uint8Array[] = [];
   let downloadedSize = 0;
 
   for (let i = 0; i < chunkCount; i++) {
-    onProgress({
+    onProgress?.({
       fileId,
       fileName,
       totalChunks: chunkCount,
@@ -36,15 +35,15 @@ export async function downloadAndDecryptFile(
     });
 
     try {
-      const response = await fetch(`/api/shares/${token}/files/${fileId}/chunks/${i}`);
+      const response = await fetch(`${API_BASE}/shares/${token}/files/${fileId}/chunks/${i}`);
       if (!response.ok) {
         throw new Error(`Failed to download chunk ${i}`);
       }
 
       const buffer = await response.arrayBuffer();
       let chunkData = new Uint8Array(buffer);
-      
-      onProgress({
+
+      onProgress?.({
         fileId,
         fileName,
         totalChunks: chunkCount,
@@ -55,7 +54,6 @@ export async function downloadAndDecryptFile(
       });
 
       if (encryptionKey) {
-        // IV is the first 12 bytes
         const iv = new Uint8Array(chunkData.slice(0, 12));
         const ciphertext = chunkData.slice(12);
         const decryptedBuffer = await decryptChunk(ciphertext.buffer as ArrayBuffer, encryptionKey, iv);
@@ -65,7 +63,7 @@ export async function downloadAndDecryptFile(
       chunks.push(chunkData);
       downloadedSize += chunkData.length;
     } catch (error) {
-      onProgress({
+      onProgress?.({
         fileId,
         fileName,
         totalChunks: chunkCount,
@@ -78,7 +76,7 @@ export async function downloadAndDecryptFile(
     }
   }
 
-  onProgress({
+  onProgress?.({
     fileId,
     fileName,
     totalChunks: chunkCount,

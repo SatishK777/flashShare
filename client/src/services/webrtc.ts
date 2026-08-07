@@ -1,4 +1,5 @@
 import { getSocket } from './socket';
+import { API_BASE } from './api';
 
 const CHUNK_SIZE = 16 * 1024; // 16KB chunks for DataChannel
 
@@ -40,7 +41,7 @@ export class WebRTCTransfer {
   
   async init(): Promise<void> {
     try {
-      const response = await fetch('/api/config/ice-servers');
+      const response = await fetch(`${API_BASE}/config/ice-servers`);
       const iceServers = response.ok ? await response.json() : [{ urls: 'stun:stun.l.google.com:19302' }];
       
       this.pc = new RTCPeerConnection({ iceServers });
