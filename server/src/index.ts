@@ -17,7 +17,7 @@ const startServer = async () => {
     // Make io accessible globally if needed, or pass it down via req
     app.set("io", io);
 
-    httpServer.listen(env.PORT, () => {
+    httpServer.listen(env.PORT, "0.0.0.0", () => {
       logger.info(`🚀 Server running in ${env.NODE_ENV} mode on port ${env.PORT}`);
     });
 
