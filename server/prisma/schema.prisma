@@ -1,0 +1,87 @@
+// Prisma schema for FlashShare
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Share {
+  id               String           @id @default(uuid())
+  token            String           @unique
+  status           String           @default("pending") // pending, active, expired, completed, cancelled
+  expiresAt        DateTime
+  maxDownloads     Int              @default(1)
+  downloadCount    Int              @default(0)
+  passwordHash     String?
+  showFilenames    Boolean          @default(true)
+  autoDeletePolicy String           @default("after_expiry")
+  transferMode     String           @default("cloud")
+  totalSize        BigInt           @default(0)
+  encryptionKeyHash String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  files            File[]
+  downloads        Download[]
+  analyticsEvents  AnalyticsEvent[]
+
+  @@map("shares")
+  @@index([token])
+  @@index([status])
+}
+
+model File {
+  id              String   @id @default(uuid())
+  shareId         String
+  originalName    String
+  storedName      String
+  mimeType        String
+  size            BigInt
+  checksumSha256  String
+  storagePath     String
+  encryptionIv    String?
+  chunkCount      Int      @default(1)
+  status          String   @default("uploading")
+  metadata        Json?
+  createdAt       DateTime @default(now())
+
+  share           Share    @relation(fields: [shareId], references: [id], onDelete: Cascade)
+
+  @@map("files")
+  @@index([shareId])
+}
+
+model Download {
+  id              String   @id @default(uuid())
+  shareId         String
+  receiverIpHash  String
+  status          String   @default("in_progress")
+  bytesDownloaded BigInt   @default(0)
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+  userAgent       String?
+
+  share           Share    @relation(fields: [shareId], references: [id], onDelete: Cascade)
+
+  @@map("downloads")
+  @@index([shareId])
+}
+
+model AnalyticsEvent {
+  id          String   @id @default(uuid())
+  shareId     String
+  eventType   String
+  metadata    Json?
+  ipHash      String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  share       Share    @relation(fields: [shareId], references: [id], onDelete: Cascade)
+
+  @@map("analytics_events")
+  @@index([shareId])
+}

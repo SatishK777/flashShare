@@ -1,0 +1,75 @@
+version: '3.8'
+services:
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  server:
+    build: ./server
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://flashshare:flashshare_secret@postgres:5432/flashshare
+      - REDIS_URL=redis://redis:6379
+      - STORAGE_PROVIDER=minio
+      - STORAGE_ENDPOINT=http://minio:9000
+      - STORAGE_ACCESS_KEY=flashshare
+      - STORAGE_SECRET_KEY=flashshare_secret
+      - STORAGE_BUCKET=flashshare
+      - STORAGE_REGION=us-east-1
+      - CORS_ORIGIN=http://localhost
+      - PORT=3001
+      - SIGNED_URL_SECRET=prod_secret_string_32_characters_long_min
+      - ADMIN_TOKEN=prod_admin_token_string_here_123456
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: flashshare
+      POSTGRES_USER: flashshare
+      POSTGRES_PASSWORD: flashshare_secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flashshare"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    environment:
+      MINIO_ROOT_USER: flashshare
+      MINIO_ROOT_PASSWORD: flashshare_secret
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  minio_data:
