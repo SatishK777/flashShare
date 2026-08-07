@@ -1,15 +1,54 @@
-// Share Repository
 import { prisma } from '../config/database.js';
-import { Prisma } from '@prisma/client';
 
-type Share = Prisma.ShareGetPayload<object>;
-type File = Prisma.FileGetPayload<object>;
-export type ShareWithFiles = Share & { files: File[] };
+// Self-contained interface — no dependency on Prisma.XxxGetPayload
+export interface ShareRecord {
+  id: string;
+  token: string;
+  status: string;
+  expiresAt: Date;
+  maxDownloads: number;
+  downloadCount: number;
+  passwordHash: string | null;
+  showFilenames: boolean;
+  autoDeletePolicy: string;
+  transferMode: string;
+  totalSize: bigint;
+  encryptionKeyHash: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
+export interface FileRecord {
+  id: string;
+  shareId: string;
+  originalName: string;
+  storedName: string;
+  mimeType: string;
+  size: bigint;
+  checksumSha256: string;
+  storagePath: string;
+  encryptionIv: string | null;
+  chunkCount: number;
+  status: string;
+  metadata: unknown;
+  createdAt: Date;
+}
+
+export type ShareWithFiles = ShareRecord & { files: FileRecord[] };
 
 export class ShareRepository {
-  async create(data: Prisma.ShareCreateInput): Promise<Share> {
-    return prisma.share.create({ data });
+  async create(data: {
+    token: string;
+    expiresAt: Date;
+    maxDownloads: number;
+    passwordHash?: string;
+    showFilenames: boolean;
+    autoDeletePolicy: string;
+    transferMode?: string;
+    encryptionKeyHash?: string;
+    status?: string;
+  }): Promise<ShareRecord> {
+    return prisma.share.create({ data }) as Promise<ShareRecord>;
   }
 
   async findById(id: string): Promise<ShareWithFiles | null> {
@@ -26,33 +65,31 @@ export class ShareRepository {
     }) as Promise<ShareWithFiles | null>;
   }
 
-  async updateStatus(id: string, status: string): Promise<Share> {
+  async updateStatus(id: string, status: string): Promise<ShareRecord> {
     return prisma.share.update({
       where: { id },
       data: { status },
-    });
+    }) as Promise<ShareRecord>;
   }
 
-  async incrementDownloadCount(id: string): Promise<Share> {
+  async incrementDownloadCount(id: string): Promise<ShareRecord> {
     return prisma.share.update({
       where: { id },
       data: { downloadCount: { increment: 1 } },
-    });
+    }) as Promise<ShareRecord>;
   }
 
-  async findActive(): Promise<Share[]> {
+  async findActive(): Promise<ShareRecord[]> {
     return prisma.share.findMany({
       where: {
         status: 'active',
         expiresAt: { gt: new Date() },
       },
-    });
+    }) as Promise<ShareRecord[]>;
   }
 
-  async delete(id: string): Promise<Share> {
-    return prisma.share.delete({
-      where: { id },
-    });
+  async delete(id: string): Promise<ShareRecord> {
+    return prisma.share.delete({ where: { id } }) as Promise<ShareRecord>;
   }
 }
 

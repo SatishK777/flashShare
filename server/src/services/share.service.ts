@@ -29,7 +29,7 @@ export class ShareService {
       token,
       expiresAt,
       maxDownloads: settings.maxDownloads,
-      passwordHash,
+      passwordHash: passwordHash ?? undefined,
       showFilenames: settings.showFilenames ?? true,
       autoDeletePolicy: settings.autoDeletePolicy ?? 'after_expiry',
       status: 'pending',
@@ -49,7 +49,7 @@ export class ShareService {
     }
 
     const files = await fileRepository.findByShareId(shareId);
-    const totalSize = files.reduce((acc, file) => acc + BigInt(file.size), BigInt(0));
+    const totalSize = files.reduce((acc: bigint, file: { size: bigint }) => acc + BigInt(file.size), BigInt(0));
 
     const updatedShare = await shareRepository.updateStatus(shareId, 'active');
 
@@ -111,7 +111,7 @@ export class ShareService {
     await shareRepository.updateStatus(shareId, 'cancelled');
 
     const files = await fileRepository.findByShareId(shareId);
-    const keysToDelete = files.map(f => f.storagePath);
+    const keysToDelete = files.map((f: { storagePath: string }) => f.storagePath);
     if (keysToDelete.length > 0) {
       await storage.deleteMany(keysToDelete);
     }

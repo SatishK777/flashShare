@@ -25,7 +25,7 @@ export class FileService {
     const storagePath = `shares/${shareId}/${storedName}`;
 
     const file = await fileRepository.create({
-      share: { connect: { id: shareId } },
+      shareId,
       originalName: fileData.originalName,
       storedName,
       mimeType: fileData.mimeType,

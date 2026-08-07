@@ -1,18 +1,23 @@
-import { Prisma } from '@prisma/client';
 import { prisma } from '../config/database.js';
 
-type Download = Prisma.DownloadGetPayload<object>;
-
+// Self-contained interface — no dependency on Prisma.XxxGetPayload
+export interface DownloadRecord {
+  id: string;
+  shareId: string;
+  receiverIpHash: string;
+  status: string;
+  bytesDownloaded: bigint;
+  startedAt: Date;
+  completedAt: Date | null;
+  userAgent: string | null;
+}
 
 export class DownloadRepository {
-  /**
-   * Create a new download record
-   */
   async create(data: {
     shareId: string;
     receiverIpHash: string;
     userAgent?: string;
-  }): Promise<Download> {
+  }): Promise<DownloadRecord> {
     return prisma.download.create({
       data: {
         shareId: data.shareId,
@@ -21,57 +26,33 @@ export class DownloadRepository {
         status: 'in_progress',
         bytesDownloaded: 0n,
       },
-    });
+    }) as Promise<DownloadRecord>;
   }
 
-  /**
-   * Find a download by ID
-   */
-  async findById(id: string): Promise<Download | null> {
-    return prisma.download.findUnique({
-      where: { id },
-    });
+  async findById(id: string): Promise<DownloadRecord | null> {
+    return prisma.download.findUnique({ where: { id } }) as Promise<DownloadRecord | null>;
   }
 
-  /**
-   * Find all downloads for a specific share
-   */
-  async findByShareId(shareId: string): Promise<Download[]> {
+  async findByShareId(shareId: string): Promise<DownloadRecord[]> {
     return prisma.download.findMany({
       where: { shareId },
       orderBy: { startedAt: 'desc' },
-    });
+    }) as Promise<DownloadRecord[]>;
   }
 
-  /**
-   * Update download status and/or bytes downloaded
-   */
   async updateStatus(
     id: string,
     status: string,
     bytesDownloaded?: bigint,
     completedAt?: Date
-  ): Promise<Download> {
-    const updateData: any = { status };
-    
-    if (bytesDownloaded !== undefined) {
-      updateData.bytesDownloaded = bytesDownloaded;
-    }
-    
-    if (completedAt !== undefined) {
-      updateData.completedAt = completedAt;
-    }
-
-    return prisma.download.update({
-      where: { id },
-      data: updateData,
-    });
+  ): Promise<DownloadRecord> {
+    const updateData: Record<string, unknown> = { status };
+    if (bytesDownloaded !== undefined) updateData.bytesDownloaded = bytesDownloaded;
+    if (completedAt !== undefined) updateData.completedAt = completedAt;
+    return prisma.download.update({ where: { id }, data: updateData }) as Promise<DownloadRecord>;
   }
 
-  /**
-   * Mark a download as completed
-   */
-  async markCompleted(id: string, totalBytes: bigint): Promise<Download> {
+  async markCompleted(id: string, totalBytes: bigint): Promise<DownloadRecord> {
     return this.updateStatus(id, 'completed', totalBytes, new Date());
   }
 }
