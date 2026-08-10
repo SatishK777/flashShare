@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface ShareSettings {
   expiresInMinutes: number;
@@ -31,36 +32,46 @@ const defaultSettings: ShareSettings = {
   autoDeletePolicy: 'after_expiry',
 };
 
-export const useShareStore = create<ShareState>((set) => ({
-  shareId: null,
-  token: null,
-  encryptionKey: null,
-  shareUrl: null,
-  expiresAt: null,
-  status: 'idle',
-  error: null,
-  settings: defaultSettings,
-  
-  setSettings: (newSettings) => set((state) => ({ 
-    settings: { ...state.settings, ...newSettings } 
-  })),
-  
-  setShare: ({ shareId, token, encryptionKey, expiresAt }) => {
-    const shareUrl = `${window.location.origin}/#/s/${token}#${encryptionKey}`;
-    set({ shareId, token, encryptionKey, expiresAt, shareUrl });
-  },
-  
-  setStatus: (status) => set({ status }),
-  setError: (error) => set({ error, status: 'error' }),
-  
-  reset: () => set({
-    shareId: null,
-    token: null,
-    encryptionKey: null,
-    shareUrl: null,
-    expiresAt: null,
-    status: 'idle',
-    error: null,
-    settings: defaultSettings
-  }),
-}));
+export const useShareStore = create<ShareState>()(
+  persist(
+    (set) => ({
+      shareId: null,
+      token: null,
+      encryptionKey: null,
+      shareUrl: null,
+      expiresAt: null,
+      status: 'idle',
+      error: null,
+      settings: defaultSettings,
+
+      setSettings: (newSettings) =>
+        set((state) => ({
+          settings: { ...state.settings, ...newSettings },
+        })),
+
+      setShare: ({ shareId, token, encryptionKey, expiresAt }) => {
+        const shareUrl = `${window.location.origin}/#/s/${token}#${encryptionKey}`;
+        set({ shareId, token, encryptionKey, expiresAt, shareUrl });
+      },
+
+      setStatus: (status) => set({ status }),
+      setError: (error) => set({ error, status: 'error' }),
+
+      reset: () =>
+        set({
+          shareId: null,
+          token: null,
+          encryptionKey: null,
+          shareUrl: null,
+          expiresAt: null,
+          status: 'idle',
+          error: null,
+          settings: defaultSettings,
+        }),
+    }),
+    {
+      name: 'flashshare-active-share',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);

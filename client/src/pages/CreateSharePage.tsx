@@ -17,13 +17,15 @@ export function CreateSharePage() {
   const { files, setUploading, updateFileProgress, clearFiles } = useUploadStore();
   const { status, settings, setStatus, setShare, setError } = useShareStore();
 
-  // Reset state on mount
+  const expiresAt = useShareStore(state => state.expiresAt);
+  const resetShare = useShareStore(state => state.reset);
+
+  // Check if active share is expired on mount
   useEffect(() => {
-    return () => {
-      clearFiles();
-      useShareStore.getState().reset();
-    };
-  }, [clearFiles]);
+    if (expiresAt && new Date(expiresAt).getTime() < Date.now()) {
+      resetShare();
+    }
+  }, [expiresAt, resetShare]);
 
   const handleGenerate = async () => {
     try {
