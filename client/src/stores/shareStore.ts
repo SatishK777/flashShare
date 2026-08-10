@@ -15,11 +15,14 @@ interface ShareState {
   encryptionKey: string | null;
   shareUrl: string | null;
   expiresAt: string | null;
+  createdShareTokens: string[];
   status: 'idle' | 'creating' | 'uploading' | 'finalizing' | 'ready' | 'error';
   error: string | null;
   settings: ShareSettings;
   setSettings: (settings: Partial<ShareSettings>) => void;
   setShare: (data: { shareId: string; token: string; encryptionKey: string; expiresAt: string }) => void;
+  addCreatedToken: (tokenOrId: string) => void;
+  removeCreatedToken: (tokenOrId: string) => void;
   setStatus: (status: ShareState['status']) => void;
   setError: (error: string) => void;
   reset: () => void;
@@ -40,6 +43,7 @@ export const useShareStore = create<ShareState>()(
       encryptionKey: null,
       shareUrl: null,
       expiresAt: null,
+      createdShareTokens: [],
       status: 'idle',
       error: null,
       settings: defaultSettings,
@@ -51,14 +55,34 @@ export const useShareStore = create<ShareState>()(
 
       setShare: ({ shareId, token, encryptionKey, expiresAt }) => {
         const shareUrl = `${window.location.origin}/#/s/${token}#${encryptionKey}`;
-        set({ shareId, token, encryptionKey, expiresAt, shareUrl });
+        set((state) => {
+          const tokens = new Set([...(state.createdShareTokens || []), token, shareId]);
+          return {
+            shareId,
+            token,
+            encryptionKey,
+            expiresAt,
+            shareUrl,
+            createdShareTokens: Array.from(tokens),
+          };
+        });
       },
+
+      addCreatedToken: (tokenOrId) =>
+        set((state) => ({
+          createdShareTokens: Array.from(new Set([...(state.createdShareTokens || []), tokenOrId])),
+        })),
+
+      removeCreatedToken: (tokenOrId) =>
+        set((state) => ({
+          createdShareTokens: (state.createdShareTokens || []).filter((t) => t !== tokenOrId),
+        })),
 
       setStatus: (status) => set({ status }),
       setError: (error) => set({ error, status: 'error' }),
 
       reset: () =>
-        set({
+        set((state) => ({
           shareId: null,
           token: null,
           encryptionKey: null,
@@ -67,7 +91,8 @@ export const useShareStore = create<ShareState>()(
           status: 'idle',
           error: null,
           settings: defaultSettings,
-        }),
+          createdShareTokens: state.createdShareTokens || [],
+        })),
     }),
     {
       name: 'flashshare-active-share',

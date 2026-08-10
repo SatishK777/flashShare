@@ -23,6 +23,7 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { formatBytes } from '../components/upload/FileList';
 import { API_BASE, api } from '../services/api';
+import { useShareStore } from '../stores/shareStore';
 
 interface ActivityEvent {
   id: string;
@@ -122,6 +123,8 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
       setRevoking(true);
       try {
         await api.cancelShare(share.id);
+        useShareStore.getState().removeCreatedToken(share.token);
+        useShareStore.getState().removeCreatedToken(share.id);
         onRevoke(share.id);
       } catch (err) {
         console.error(err);
@@ -287,6 +290,19 @@ export const DashboardPage: React.FC = () => {
     queryClient.invalidateQueries({ queryKey: ['dashboard'] });
   };
 
+  const createdShareTokens = useShareStore((state) => state.createdShareTokens) || [];
+  const activeShareToken = useShareStore((state) => state.token);
+  const activeShareId = useShareStore((state) => state.shareId);
+
+  const myActiveSharesList = (data?.activeSharesList || []).filter((share) => {
+    return (
+      createdShareTokens.includes(share.token) ||
+      createdShareTokens.includes(share.id) ||
+      share.token === activeShareToken ||
+      share.id === activeShareId
+    );
+  });
+
   return (
     <div className="page-container-wide app-page">
       <motion.div
@@ -369,8 +385,8 @@ export const DashboardPage: React.FC = () => {
                 <div>
                   <h3 className="font-medium text-text-secondary text-sm uppercase tracking-wider mb-1">Active Shares</h3>
                   <div className="text-4xl font-display font-bold text-text-primary flex items-center gap-3">
-                    {data.activeShares}
-                    {data.activeShares > 0 && (
+                    {myActiveSharesList.length}
+                    {myActiveSharesList.length > 0 && (
                       <span className="relative flex h-3 w-3 mt-1">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-success-500"></span>
@@ -433,11 +449,11 @@ export const DashboardPage: React.FC = () => {
                         Active Shares Manager
                       </h2>
                       <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-success-500/10 text-success-500 text-xs font-extrabold border border-success-500/25 shrink-0 whitespace-nowrap">
-                        {data.activeShares} Live
+                        {myActiveSharesList.length} Live
                       </span>
                     </div>
                     <p className="text-text-secondary text-xs sm:text-sm mt-0.5">
-                      View active URLs, copy links, inspect files, or revoke access
+                      View active URLs, copy links, inspect files, or revoke access for shares created on this device
                     </p>
                   </div>
                 </div>
@@ -446,7 +462,7 @@ export const DashboardPage: React.FC = () => {
                   onClick={() => setActiveSharesOpen(!activeSharesOpen)}
                   className="active-shares-toggle-btn w-full sm:w-auto justify-center mt-1 sm:mt-0 shrink-0"
                 >
-                  <span>{activeSharesOpen ? 'Hide Active Shares' : `Show Active Shares (${data.activeShares})`}</span>
+                  <span>{activeSharesOpen ? 'Hide Active Shares' : `Show Active Shares (${myActiveSharesList.length})`}</span>
                   {activeSharesOpen ? <ChevronUp size={16} className="text-brand-400" /> : <ChevronDown size={16} className="text-brand-400" />}
                 </button>
               </div>
@@ -461,10 +477,10 @@ export const DashboardPage: React.FC = () => {
                     className="overflow-hidden border-t border-border-primary/50"
                   >
                     <div className="p-5 sm:p-6">
-                      {data.activeSharesList && data.activeSharesList.length > 0 ? (
+                      {myActiveSharesList.length > 0 ? (
                         <div className="flex flex-col gap-4">
                           <AnimatePresence mode="popLayout">
-                            {data.activeSharesList.map((share) => (
+                            {myActiveSharesList.map((share) => (
                               <ActiveShareRow key={share.id} share={share} onRevoke={handleRevokeShare} />
                             ))}
                           </AnimatePresence>
@@ -474,8 +490,8 @@ export const DashboardPage: React.FC = () => {
                           <div className="w-16 h-16 mb-4 rounded-2xl bg-bg-secondary flex items-center justify-center text-text-tertiary border border-border-primary/50">
                             <Activity size={34} className="opacity-40" />
                           </div>
-                          <h3 className="text-xl font-display font-bold text-text-primary mb-2">No active shares right now</h3>
-                          <p className="text-text-secondary text-sm max-w-sm">When you create a new share, its live URL, QR code, and expiry will appear here for easy management.</p>
+                          <h3 className="text-xl font-display font-bold text-text-primary mb-2">No active shares on this device</h3>
+                          <p className="text-text-secondary text-sm max-w-sm">When you create a new share on this browser, its live URL, QR code, and expiry will appear here for private management.</p>
                         </div>
                       )}
                     </div>
