@@ -55,7 +55,7 @@ export function DropZone({ compact = false }: DropZoneProps) {
         or tap to select files from your device
       </p>
       {!compact && (
-        <div className="inline-flex items-center justify-center px-6 py-2.5 rounded-full text-xs font-medium tracking-wide text-text-tertiary border border-border-primary bg-bg-secondary/80 shadow-sm">
+        <div className="dropzone-info-badge">
           Up to 50GB total size • All file types supported
         </div>
       )}

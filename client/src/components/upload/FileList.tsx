@@ -29,7 +29,7 @@ export function FileList() {
     <div className="flex flex-col gap-4 mt-6">
       <div className="flex justify-between items-center px-1">
         <h3 className="font-display font-medium text-lg text-text-primary">Selected Files</h3>
-        <span className="inline-flex items-center justify-center px-5 py-2 rounded-full text-xs sm:text-sm font-semibold text-text-secondary bg-bg-secondary border border-border-primary shadow-sm tracking-wide">
+        <span className="file-count-badge">
           {files.length} {files.length === 1 ? 'file' : 'files'} • {formatBytes(totalSize())}
         </span>
       </div>
