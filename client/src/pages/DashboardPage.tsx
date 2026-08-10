@@ -457,9 +457,9 @@ export const DashboardPage: React.FC = () => {
                           </AnimatePresence>
                         </div>
                       ) : (
-                        <div className="py-14 flex flex-col items-center justify-center text-center">
-                          <div className="w-16 h-16 mb-4 rounded-2xl bg-bg-secondary flex items-center justify-center text-text-tertiary border border-border-primary/50">
-                            <Activity size={34} className="opacity-40" />
+                        <div className="dashboard-empty-state">
+                          <div className="dashboard-empty-state-icon text-text-tertiary">
+                            <Activity size={32} className="opacity-50 text-brand-400" />
                           </div>
                           <h3 className="text-xl font-display font-bold text-text-primary mb-2">No active shares on this device</h3>
                           <p className="text-text-secondary text-sm max-w-sm">When you create a new share on this browser, its live URL, QR code, and expiry will appear here for private management.</p>
@@ -525,9 +525,9 @@ export const DashboardPage: React.FC = () => {
                   </AnimatePresence>
                 </div>
               ) : (
-                <div className="py-14 flex flex-col items-center justify-center text-center p-6">
-                  <div className="w-16 h-16 mb-4 rounded-2xl bg-bg-secondary flex items-center justify-center text-text-tertiary border border-border-primary/50">
-                    <Activity size={34} className="opacity-40" />
+                <div className="dashboard-empty-state">
+                  <div className="dashboard-empty-state-icon text-text-tertiary">
+                    <Activity size={32} className="opacity-50 text-brand-400" />
                   </div>
                   <h3 className="text-xl font-display font-bold text-text-primary mb-2">No recent activity on this device</h3>
                   <p className="text-text-secondary text-sm max-w-sm">When views or downloads occur on shares created from this browser, live event logs will appear here.</p>

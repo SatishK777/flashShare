@@ -1059,6 +1059,29 @@ html.light .site-footer {
   border-bottom: 1px solid rgba(148, 163, 184, 0.15) !important;
 }
 
+/* Dashboard Empty State Styling */
+.dashboard-empty-state {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 4.5rem 1.5rem !important;
+}
+
+.dashboard-empty-state-icon {
+  width: 4.5rem !important;
+  height: 4.5rem !important;
+  margin-bottom: 1.25rem !important;
+  border-radius: 1.25rem !important;
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
 .file-count-badge {
   display: inline-flex !important;
   align-items: center !important;
