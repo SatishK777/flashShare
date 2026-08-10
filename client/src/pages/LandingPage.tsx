@@ -77,75 +77,77 @@ export const LandingPage: React.FC = () => {
       
       {/* Hero Section */}
       <section className="landing-hero relative overflow-hidden z-10">
-        <div className="page-container text-center relative z-10">
+        <div className="page-container text-center relative z-10 flex flex-col items-center gap-10 md:gap-14 py-8">
+          <div className="max-w-4xl mx-auto flex flex-col items-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+            >
+              <div className="hero-status-badge mb-8 sm:mb-10">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
+                </span>
+                <span>FlashShare v1.0 is live</span>
+              </div>
+            </motion.div>
+
+            <motion.h1 
+              className="hero-title"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
+            >
+              Secure file sharing.<br className="hidden md:block" />
+              <span className="gradient-text">Built for speed.</span>
+            </motion.h1>
+
+            <motion.p 
+              className="hero-copy"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
+            >
+              Drop files, generate a private QR code, and move data between devices with encryption, clear status, and zero account friction.
+            </motion.p>
+
+            <motion.div 
+              className="flex flex-col sm:flex-row items-center justify-center gap-5 mt-2"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
+            >
+              <Link to="/create" className="w-full sm:w-auto">
+                <Button size="lg" className="hero-button h-14 text-base font-bold rounded-lg w-full sm:w-auto gradient-bg border-0 glow-lg hover:-translate-y-0.5 transition-all duration-300 shadow-2xl text-white">
+                  Start Sharing <ArrowRight className="ml-3 w-5 h-5" />
+                </Button>
+              </Link>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                onClick={() => setIsVideoOpen(true)}
+                className="hero-button h-14 text-base font-semibold rounded-lg w-full sm:w-auto glass-strong hover:bg-[var(--bg-tertiary)] border-[var(--border-glass)] text-[var(--text-primary)] transition-all duration-300 gap-2"
+              >
+                <Play size={18} className="text-brand-400 fill-brand-400/20" />
+                <span>See How It Works</span>
+              </Button>
+            </motion.div>
+          </div>
+
+          {/* Floating QR Mockup */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="w-full max-w-md mx-auto perspective-1000 z-10 hidden md:block pt-4"
+            initial={{ opacity: 0, y: 50, rotateX: 20 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
           >
-            <div className="hero-status-badge mb-10">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
-              </span>
-              <span>FlashShare v1.0 is live</span>
+            <div className="glass-strong p-8 rounded-2xl glow-lg mx-auto w-64 h-64 flex flex-col items-center justify-center border-[var(--border-glass)] transform hover:-translate-y-2 transition-transform duration-500 premium-ring shadow-2xl">
+              <QrCodeIcon className="w-32 h-32 text-brand-400" />
+              <div className="mt-4 text-[var(--text-secondary)] font-bold text-xs tracking-wider uppercase">SCAN TO DOWNLOAD</div>
             </div>
           </motion.div>
-
-          <motion.h1 
-            className="hero-title"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
-          >
-            Secure file sharing.<br className="hidden md:block" />
-            <span className="gradient-text">Built for speed.</span>
-          </motion.h1>
-
-          <motion.p 
-            className="hero-copy"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
-          >
-            Drop files, generate a private QR code, and move data between devices with encryption, clear status, and zero account friction.
-          </motion.p>
-
-          <motion.div 
-            className="flex flex-col sm:flex-row items-center justify-center gap-5"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-          >
-            <Link to="/create" className="w-full sm:w-auto">
-              <Button size="lg" className="hero-button h-14 text-base font-bold rounded-lg w-full sm:w-auto gradient-bg border-0 glow-lg hover:-translate-y-0.5 transition-all duration-300 shadow-2xl text-white">
-                Start Sharing <ArrowRight className="ml-3 w-5 h-5" />
-              </Button>
-            </Link>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              onClick={() => setIsVideoOpen(true)}
-              className="hero-button h-14 text-base font-semibold rounded-lg w-full sm:w-auto glass-strong hover:bg-[var(--bg-tertiary)] border-[var(--border-glass)] text-[var(--text-primary)] transition-all duration-300 gap-2"
-            >
-              <Play size={18} className="text-brand-400 fill-brand-400/20" />
-              <span>See How It Works</span>
-            </Button>
-          </motion.div>
         </div>
-
-        {/* Floating QR Mockup */}
-        <motion.div
-          className="mt-16 w-full max-w-md mx-auto perspective-1000 z-10 hidden md:block"
-          initial={{ opacity: 0, y: 50, rotateX: 20 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
-        >
-          <div className="glass-strong p-8 rounded-lg glow-lg mx-auto w-64 h-64 flex flex-col items-center justify-center border-[var(--border-glass)] transform hover:-translate-y-2 transition-transform duration-500 premium-ring">
-            <QrCodeIcon className="w-32 h-32 text-brand-400" />
-            <div className="mt-4 text-[var(--text-secondary)] font-semibold text-sm tracking-wide">SCAN TO DOWNLOAD</div>
-          </div>
-        </motion.div>
       </section>
 
       {/* How it Works */}
