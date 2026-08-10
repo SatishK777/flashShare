@@ -23,7 +23,6 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { formatBytes } from '../components/upload/FileList';
 import { API_BASE, api } from '../services/api';
-import { Button } from '../components/ui/button';
 
 interface ActivityEvent {
   id: string;
@@ -134,12 +133,12 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, height: 0 }}
-      className="glass-strong rounded-2xl p-5 sm:p-6 border border-[var(--border-glass)] hover:border-brand-500/30 transition-all duration-300 shadow-xl flex flex-col gap-4 relative overflow-hidden"
+      className="active-share-card"
     >
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Left Info Column */}
         <div className="flex items-center gap-4 min-w-0">
-          <div className="w-11 h-11 rounded-xl bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center justify-center shrink-0 shadow-sm">
+          <div className="active-share-icon-box">
             <ShieldCheck size={22} />
           </div>
           <div className="min-w-0">
@@ -147,7 +146,7 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
               <span className="font-mono font-bold text-text-primary text-base tracking-wide truncate">
                 {share.token}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success-500/10 text-success-500 text-xs font-bold border border-success-500/25 shrink-0">
+              <span className="active-share-status-pill">
                 <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
                 Active
               </span>
@@ -160,39 +159,34 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
 
         {/* Action Controls */}
         <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
-          <Button
-            size="sm"
+          <button
             onClick={handleCopy}
-            className="h-10 px-4 rounded-xl text-xs font-bold gap-2 bg-brand-500/10 text-brand-400 border border-brand-500/25 hover:bg-brand-500/20 active:scale-95 transition-all shadow-sm"
+            className="active-share-btn-copy"
           >
             {copied ? <CheckCircle size={15} className="text-success-500" /> : <Copy size={15} />}
-            {copied ? 'Copied' : 'Copy Link'}
-          </Button>
+            <span>{copied ? 'Copied' : 'Copy Link'}</span>
+          </button>
 
-          <Button
-            size="sm"
-            variant="outline"
+          <button
             onClick={() => window.open(fullUrl, '_blank')}
-            className="h-10 w-10 p-0 rounded-xl bg-bg-secondary text-text-secondary border border-border-primary hover:text-brand-400 hover:border-brand-500/30 transition-all"
+            className="active-share-btn-icon"
             title="Open Share"
           >
             <ExternalLink size={15} />
-          </Button>
+          </button>
 
-          <Button
-            size="sm"
-            variant="outline"
+          <button
             onClick={handleRevoke}
             disabled={revoking}
-            className="h-10 w-10 p-0 rounded-xl bg-error-500/10 text-error-500 border border-error-500/25 hover:bg-error-500/20 transition-all"
+            className="active-share-btn-revoke"
             title="Revoke Share"
           >
             <Trash2 size={15} />
-          </Button>
+          </button>
 
           <button
             onClick={() => setExpanded(!expanded)}
-            className="h-10 w-10 flex items-center justify-center text-text-tertiary hover:text-text-primary bg-bg-secondary/60 hover:bg-bg-secondary rounded-xl border border-border-primary/60 transition-all"
+            className="active-share-btn-icon"
             title={expanded ? "Collapse details" : "Expand details"}
           >
             {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -200,15 +194,15 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
         </div>
       </div>
 
-      {/* Metrics Bar Pills (NO harsh border line across) */}
-      <div className="flex flex-wrap items-center gap-2.5 pt-1">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-bg-secondary/70 border border-border-primary/60 text-xs font-medium text-text-secondary shadow-sm">
+      {/* Metrics Bar Pills */}
+      <div className="flex flex-wrap items-center gap-2.5">
+        <div className="active-share-metric-pill">
           <Clock size={14} className="text-brand-400" />
           <span>Expires in:</span>
           <strong className="text-text-primary font-bold">{timeLeft}</strong>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-bg-secondary/70 border border-border-primary/60 text-xs font-medium text-text-secondary shadow-sm">
+        <div className="active-share-metric-pill">
           <Download size={14} className="text-brand-400" />
           <span>Downloads:</span>
           <strong className="text-text-primary font-bold">
@@ -224,7 +218,7 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex flex-col md:flex-row items-stretch gap-5 pt-4 border-t border-border-primary/40 mt-1"
+            className="active-share-expanded-panel flex flex-col md:flex-row items-stretch gap-5"
           >
             <div className="p-3 bg-white rounded-xl shrink-0 shadow-lg flex items-center justify-center self-center md:self-start">
               <QRCodeSVG value={fullUrl} size={128} level="M" />
