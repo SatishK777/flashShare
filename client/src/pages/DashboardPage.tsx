@@ -233,7 +233,7 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
                       <FileText size={16} className="text-brand-400 shrink-0" />
                       <span className="truncate">{share.showFilenames ? f.originalName : `File ${f.id.substring(0, 4)}`}</span>
                     </span>
-                    <span className="text-text-tertiary font-semibold shrink-0 bg-bg-primary px-3 py-1 rounded-lg border border-border-primary/40">
+                    <span className="active-share-file-size-badge">
                       {formatBytes(parseInt(f.size, 10))}
                     </span>
                   </div>

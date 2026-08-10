@@ -858,6 +858,21 @@ html.light .site-footer {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
+.active-share-file-size-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.35rem 1rem !important;
+  border-radius: 0.5rem !important;
+  background: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-tertiary) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
 .active-share-btn-icon {
   display: inline-flex !important;
   align-items: center !important;
