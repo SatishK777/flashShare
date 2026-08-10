@@ -55,7 +55,7 @@ export function DropZone({ compact = false }: DropZoneProps) {
         or tap to select files from your device
       </p>
       {!compact && (
-        <div className="text-xs text-text-tertiary rounded-md border border-border-primary bg-bg-secondary/60 px-3 py-1.5">
+        <div className="text-xs font-semibold text-text-tertiary rounded-xl border border-border-primary/80 bg-bg-secondary/80 px-4.5 py-2 shadow-sm tracking-wide">
           Up to 50GB total size • All file types supported
         </div>
       )}

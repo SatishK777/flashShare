@@ -20,7 +20,7 @@ export function ShareSettingsPanel() {
           </div>
           <select
             disabled={disabled}
-            className="settings-select bg-bg-primary border border-border-primary rounded-md px-3 py-1.5 text-sm text-text-primary outline-none focus:border-brand-500 disabled:opacity-50"
+            className="settings-select bg-bg-primary border border-border-primary rounded-xl px-4 py-2.5 text-sm font-medium text-text-primary outline-none focus:border-brand-500 hover:border-brand-500/50 transition-all disabled:opacity-50 cursor-pointer shadow-sm"
             value={settings.expiresInMinutes}
             onChange={(e) => setSettings({ expiresInMinutes: parseInt(e.target.value) })}
           >
@@ -41,7 +41,7 @@ export function ShareSettingsPanel() {
           </div>
           <select
             disabled={disabled}
-            className="settings-select bg-bg-primary border border-border-primary rounded-md px-3 py-1.5 text-sm text-text-primary outline-none focus:border-brand-500 disabled:opacity-50"
+            className="settings-select bg-bg-primary border border-border-primary rounded-xl px-4 py-2.5 text-sm font-medium text-text-primary outline-none focus:border-brand-500 hover:border-brand-500/50 transition-all disabled:opacity-50 cursor-pointer shadow-sm"
             value={settings.maxDownloads}
             onChange={(e) => setSettings({ maxDownloads: parseInt(e.target.value) })}
           >
@@ -60,7 +60,7 @@ export function ShareSettingsPanel() {
           </div>
           <select
             disabled={disabled}
-            className="settings-select bg-bg-primary border border-border-primary rounded-md px-3 py-1.5 text-sm text-text-primary outline-none focus:border-brand-500 disabled:opacity-50"
+            className="settings-select bg-bg-primary border border-border-primary rounded-xl px-4 py-2.5 text-sm font-medium text-text-primary outline-none focus:border-brand-500 hover:border-brand-500/50 transition-all disabled:opacity-50 cursor-pointer shadow-sm"
             value={settings.autoDeletePolicy}
             onChange={(e) => setSettings({ autoDeletePolicy: e.target.value as any })}
           >

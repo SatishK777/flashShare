@@ -29,7 +29,7 @@ export function FileList() {
     <div className="flex flex-col gap-4 mt-6">
       <div className="flex justify-between items-center px-1">
         <h3 className="font-display font-medium text-lg text-text-primary">Selected Files</h3>
-        <span className="text-sm text-text-secondary bg-bg-secondary border border-border-primary px-3 py-1 rounded-md">
+        <span className="text-xs sm:text-sm font-semibold text-text-secondary bg-bg-secondary/90 border border-border-primary/80 px-4 py-1.5 rounded-xl shadow-sm tracking-wide">
           {files.length} {files.length === 1 ? 'file' : 'files'} • {formatBytes(totalSize())}
         </span>
       </div>
