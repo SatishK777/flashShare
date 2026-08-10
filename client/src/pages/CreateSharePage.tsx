@@ -172,13 +172,13 @@ export function CreateSharePage() {
           >
             <div className="absolute inset-x-0 top-0 h-1 gradient-bg" />
             
-            <div className="flex items-center gap-3 mb-6 relative z-10">
-              <div className="w-11 h-11 rounded-lg bg-bg-secondary flex items-center justify-center text-brand-500 border border-border-primary">
+            <div className="flex items-center gap-3.5 mb-7 sm:mb-8 relative z-10">
+              <div className="w-11 h-11 rounded-xl bg-bg-secondary flex items-center justify-center text-brand-500 border border-border-primary shadow-sm">
                 <Lock size={22} />
               </div>
               <div>
-                <h2 className="text-xl font-display font-semibold text-text-primary">Security Settings</h2>
-                <p className="text-sm text-text-secondary">Configure access controls</p>
+                <h2 className="text-xl font-display font-bold text-text-primary">Security Settings</h2>
+                <p className="text-xs sm:text-sm text-text-secondary mt-0.5">Configure access controls</p>
               </div>
             </div>
 
