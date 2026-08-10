@@ -137,12 +137,12 @@ export const LandingPage: React.FC = () => {
 
           {/* Floating QR Mockup */}
           <motion.div
-            className="w-full max-w-md mx-auto perspective-1000 z-10 hidden md:block pt-4"
+            className="w-full flex items-center justify-center perspective-1000 z-10 hidden md:flex pt-4"
             initial={{ opacity: 0, y: 50, rotateX: 20 }}
             animate={{ opacity: 1, y: 0, rotateX: 0 }}
             transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
           >
-            <div className="glass-strong p-8 rounded-2xl glow-lg mx-auto w-64 h-64 flex flex-col items-center justify-center border-[var(--border-glass)] transform hover:-translate-y-2 transition-transform duration-500 premium-ring shadow-2xl">
+            <div className="glass-strong p-8 rounded-2xl glow-lg w-64 h-64 flex flex-col items-center justify-center border-[var(--border-glass)] transform hover:-translate-y-2 transition-transform duration-500 premium-ring shadow-2xl">
               <QrCodeIcon className="w-32 h-32 text-brand-400" />
               <div className="mt-4 text-[var(--text-secondary)] font-bold text-xs tracking-wider uppercase">SCAN TO DOWNLOAD</div>
             </div>
