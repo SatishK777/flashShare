@@ -96,6 +96,10 @@ function useCountdown(expiresAt: string) {
   return timeLeft;
 }
 
+const MemoizedQRCode = React.memo(({ value }: { value: string }) => (
+  <QRCodeSVG value={value} size={128} level="M" />
+));
+
 function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke: (id: string) => void }) {
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -128,13 +132,7 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
   };
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, height: 0 }}
-      className="active-share-card"
-    >
+    <div className="active-share-card">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Left Info Column */}
         <div className="flex items-center gap-4 min-w-0">
@@ -211,17 +209,12 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
         </div>
       </div>
 
-      {/* Expanded File List & QR */}
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="active-share-expanded-panel flex flex-col md:flex-row items-stretch gap-5"
-          >
+      {/* Hardware-Accelerated CSS Grid Expandable Section */}
+      <div className={`active-share-expandable-container ${expanded ? 'is-expanded' : ''}`}>
+        <div className="active-share-expandable-inner">
+          <div className="active-share-expanded-panel flex flex-col md:flex-row items-stretch gap-5 mt-2">
             <div className="p-3 bg-white rounded-xl shrink-0 shadow-lg flex items-center justify-center self-center md:self-start">
-              <QRCodeSVG value={fullUrl} size={128} level="M" />
+              <MemoizedQRCode value={fullUrl} />
             </div>
 
             <div className="flex-grow min-w-0 w-full flex flex-col justify-center gap-2">
@@ -240,10 +233,10 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
                 ))}
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

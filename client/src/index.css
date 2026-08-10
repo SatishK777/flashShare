@@ -932,6 +932,20 @@ html.light .site-footer {
   margin-top: 0.5rem !important;
 }
 
+.active-share-expandable-container {
+  display: grid !important;
+  grid-template-rows: 0fr !important;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.active-share-expandable-container.is-expanded {
+  grid-template-rows: 1fr !important;
+}
+
+.active-share-expandable-inner {
+  overflow: hidden !important;
+}
+
 .file-count-badge {
   display: inline-flex !important;
   align-items: center !important;
