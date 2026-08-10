@@ -293,6 +293,11 @@ export const DashboardPage: React.FC = () => {
   const createdShareTokens = useShareStore((state) => state.createdShareTokens) || [];
   const activeShareToken = useShareStore((state) => state.token);
   const activeShareId = useShareStore((state) => state.shareId);
+  const myRecentActivity = (data?.recentActivity || []).filter((event) =>
+    createdShareTokens.some(
+      (t) => t === event.shareId || event.shareId.startsWith(t) || t.startsWith(event.shareId)
+    )
+  );
 
   const myActiveSharesList = (data?.activeSharesList || []).filter((share) => {
     return (
@@ -519,10 +524,10 @@ export const DashboardPage: React.FC = () => {
             </div>
             
             <div>
-              {data.recentActivity && data.recentActivity.length > 0 ? (
+              {myRecentActivity.length > 0 ? (
                 <div className="activity-list p-5">
                   <AnimatePresence mode="popLayout">
-                    {data.recentActivity.map((event, index) => {
+                    {myRecentActivity.map((event, index) => {
                       const { icon: EventIcon, text, color, bg } = getEventDisplay(event.eventType);
                       return (
                         <motion.div
@@ -554,12 +559,12 @@ export const DashboardPage: React.FC = () => {
                   </AnimatePresence>
                 </div>
               ) : (
-                <div className="py-20 flex flex-col items-center justify-center text-center">
-                  <div className="w-24 h-24 mb-8 rounded-2xl bg-bg-secondary/50 flex items-center justify-center text-text-tertiary border border-border-primary/40">
-                    <Activity size={56} className="opacity-40" />
+                <div className="py-14 flex flex-col items-center justify-center text-center p-6">
+                  <div className="w-16 h-16 mb-4 rounded-2xl bg-bg-secondary flex items-center justify-center text-text-tertiary border border-border-primary/50">
+                    <Activity size={34} className="opacity-40" />
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-text-primary mb-3">No activity yet</h3>
-                  <p className="text-text-secondary text-base max-w-sm">When your shares are viewed or downloaded, the events will appear here in real-time.</p>
+                  <h3 className="text-xl font-display font-bold text-text-primary mb-2">No recent activity on this device</h3>
+                  <p className="text-text-secondary text-sm max-w-sm">When views or downloads occur on shares created from this browser, live event logs will appear here.</p>
                 </div>
               )}
             </div>
