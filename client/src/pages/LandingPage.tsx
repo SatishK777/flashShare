@@ -31,12 +31,12 @@ export const LandingPage: React.FC = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg glass mb-10 text-[var(--text-primary)] font-semibold text-sm shadow-xl">
+            <div className="hero-status-badge mb-10">
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
               </span>
-              FlashShare v1.0 is live
+              <span>FlashShare v1.0 is live</span>
             </div>
           </motion.div>
 
