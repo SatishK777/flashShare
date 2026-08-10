@@ -422,25 +422,29 @@ export const DashboardPage: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
               className="activity-panel glass-strong overflow-hidden flex flex-col border border-border-primary/50 shadow-2xl premium-ring mb-8 rounded-2xl"
             >
-              <div className="activity-panel-header flex items-center justify-between p-5 sm:p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-success-500/10 flex items-center justify-center text-success-500 border border-success-500/20 shadow-sm">
-                    <Activity size={24} />
+              <div className="activity-panel-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-6">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-success-500/10 flex items-center justify-center text-success-500 border border-success-500/20 shadow-sm shrink-0">
+                    <Activity size={22} />
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-display font-bold text-text-primary flex items-center gap-3">
-                      Active Shares Manager
-                      <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-success-500/10 text-success-500 border border-success-500/25">
+                  <div className="min-w-0 flex-grow">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                      <h2 className="text-lg sm:text-2xl font-display font-bold text-text-primary">
+                        Active Shares Manager
+                      </h2>
+                      <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-success-500/10 text-success-500 text-xs font-extrabold border border-success-500/25 shrink-0 whitespace-nowrap">
                         {data.activeShares} Live
                       </span>
-                    </h2>
-                    <p className="text-text-secondary text-sm mt-0.5">View active URLs, copy links, inspect files, or revoke access</p>
+                    </div>
+                    <p className="text-text-secondary text-xs sm:text-sm mt-0.5">
+                      View active URLs, copy links, inspect files, or revoke access
+                    </p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setActiveSharesOpen(!activeSharesOpen)}
-                  className="active-shares-toggle-btn shrink-0"
+                  className="active-shares-toggle-btn w-full sm:w-auto justify-center mt-1 sm:mt-0 shrink-0"
                 >
                   <span>{activeSharesOpen ? 'Hide Active Shares' : `Show Active Shares (${data.activeShares})`}</span>
                   {activeSharesOpen ? <ChevronUp size={16} className="text-brand-400" /> : <ChevronDown size={16} className="text-brand-400" />}
