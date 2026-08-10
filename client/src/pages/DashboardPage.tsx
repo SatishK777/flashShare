@@ -302,9 +302,9 @@ export const DashboardPage: React.FC = () => {
           <p>Real-time analytics and active shares management</p>
         </div>
         
-        <div className="flex items-center gap-2 px-4 py-2 rounded-lg glass border border-border-primary text-xs font-medium text-text-secondary">
+        <div className="dashboard-refresh-badge shrink-0">
           <RefreshCw size={14} className={isFetching ? "animate-spin text-brand-500" : ""} />
-          Auto-refreshing every 10s
+          <span>Auto-refreshing every 10s</span>
         </div>
       </motion.div>
 
