@@ -82,9 +82,14 @@ export const initializeSocket = (httpServer: HttpServer) => {
     });
 
     socket.on(EVENTS.DOWNLOAD_COMPLETED, async (roomId: string) => {
-      socket.to(roomId).emit(EVENTS.DOWNLOAD_COMPLETED, { timestamp: new Date() });
       logger.info(`Download completed in socket room ${roomId}`);
-      await shareService.recordDownload(roomId);
+      const result = await shareService.recordDownload(roomId);
+      ioInstance.to(roomId).emit(EVENTS.DOWNLOAD_COMPLETED, {
+        timestamp: new Date(),
+        downloadCount: result?.downloadCount || 1,
+        maxDownloads: result?.maxDownloads || 1,
+        isFullyCompleted: result?.isFullyCompleted ?? true,
+      });
     });
 
     socket.on("disconnecting", () => {

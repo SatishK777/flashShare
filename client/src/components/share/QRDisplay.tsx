@@ -18,9 +18,15 @@ export function QRDisplay() {
   const files = useUploadStore(state => state.files);
   const rawFiles = files.map(f => f.file);
 
+  const settings = useShareStore(state => state.settings);
+  const [downloadStats, setDownloadStats] = useState<{ count: number; max: number }>({
+    count: 0,
+    max: settings.maxDownloads,
+  });
+
   const [copied, setCopied] = useState(false);
   const [timeLeft, setTimeLeft] = useState('');
-  const [receiverStatus, setReceiverStatus] = useState<'waiting' | 'connected' | 'downloading' | 'completed' | 'p2p_connecting'>('waiting');
+  const [receiverStatus, setReceiverStatus] = useState<'waiting' | 'connected' | 'downloading' | 'partially_completed' | 'completed' | 'p2p_connecting'>('waiting');
   
   const [transferMode, setTransferMode] = useState<'cloud' | 'p2p' | null>(null);
   const [p2pProgress, setP2pProgress] = useState<P2PTransferProgress | null>(null);
@@ -138,8 +144,21 @@ export function QRDisplay() {
       }
     });
     
-    socket.on(SOCKET_EVENTS.DOWNLOAD_COMPLETED, () => {
-      setReceiverStatus('completed');
+    socket.on(SOCKET_EVENTS.DOWNLOAD_COMPLETED, (data?: { downloadCount?: number; maxDownloads?: number; isFullyCompleted?: boolean }) => {
+      const count = data?.downloadCount ?? 1;
+      const max = data?.maxDownloads ?? settings.maxDownloads;
+      const isFullyCompleted = data?.isFullyCompleted ?? (max > 0 && count >= max);
+
+      setDownloadStats({ count, max });
+
+      if (isFullyCompleted) {
+        setReceiverStatus('completed');
+      } else {
+        setReceiverStatus('partially_completed');
+        setTimeout(() => {
+          setReceiverStatus('waiting');
+        }, 5000);
+      }
     });
 
     return () => {
@@ -152,7 +171,7 @@ export function QRDisplay() {
       socket.off(SOCKET_EVENTS.DOWNLOAD_STARTED);
       socket.off(SOCKET_EVENTS.DOWNLOAD_COMPLETED);
     };
-  }, [shareId, rawFiles, transferMode]);
+  }, [shareId, rawFiles, transferMode, settings.maxDownloads]);
 
   if (!shareUrl) return null;
 
@@ -192,7 +211,11 @@ export function QRDisplay() {
                 >
                   <CheckCircle size={34} />
                 </motion.div>
-                <p>Transfer Complete!</p>
+                <p>
+                  {downloadStats.max > 1 
+                    ? `All ${downloadStats.max} Downloads Complete!` 
+                    : 'Transfer Complete!'}
+                </p>
               </motion.div>
             )}
             <QRCodeSVG
@@ -219,6 +242,20 @@ export function QRDisplay() {
                     <span className="w-2 h-2 rounded-full bg-brand-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                   Waiting for receiver...
+                </motion.div>
+              )}
+              {receiverStatus === 'partially_completed' && (
+                <motion.div
+                  key="partially_completed"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="qr-status-pill qr-status-success"
+                >
+                  <CheckCircle size={16} />
+                  {downloadStats.max > 0 
+                    ? `Download ${downloadStats.count} of ${downloadStats.max} complete!` 
+                    : `Download ${downloadStats.count} complete!`}
                 </motion.div>
               )}
               {receiverStatus === 'connected' && transferMode === 'p2p' && (
@@ -270,7 +307,20 @@ export function QRDisplay() {
           >
             <p className="qr-eyebrow">Secure link generated</p>
             <h2 className="font-display gradient-text">Ready to Share</h2>
-            <p>Scan with any camera or share the private link below.</p>
+            <p className="mb-2">Scan with any camera or share the private link below.</p>
+            
+            {downloadStats.count > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-brand-500/10 border border-brand-500/25 text-brand-400 font-semibold text-xs mt-1"
+              >
+                <Download size={14} />
+                <span>
+                  Downloads: {downloadStats.count} {downloadStats.max > 0 ? `/ ${downloadStats.max}` : '(Unlimited)'}
+                </span>
+              </motion.div>
+            )}
           </motion.div>
 
           {transferMode && (

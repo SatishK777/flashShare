@@ -158,12 +158,14 @@ export class ShareService {
 
   async recordDownload(shareId: string) {
     const share = await shareRepository.findById(shareId);
-    if (!share) return;
+    if (!share) return null;
 
     const updatedCount = share.downloadCount + 1;
     await shareRepository.incrementDownloadCount(shareId);
 
-    if (share.maxDownloads !== -1 && updatedCount >= share.maxDownloads) {
+    const isFullyCompleted = share.maxDownloads !== -1 && updatedCount >= share.maxDownloads;
+
+    if (isFullyCompleted) {
       await shareRepository.updateStatus(shareId, 'completed');
       logger.info(`Share ${shareId} marked completed after reaching max downloads (${share.maxDownloads})`);
 
@@ -175,6 +177,12 @@ export class ShareService {
         }
       }
     }
+
+    return {
+      downloadCount: updatedCount,
+      maxDownloads: share.maxDownloads,
+      isFullyCompleted,
+    };
   }
 }
 
