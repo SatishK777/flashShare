@@ -89,7 +89,7 @@ export const analyticsService = {
       },
     });
 
-    const activeSharesList = await prisma.share.findMany({
+    const activeSharesRaw = await prisma.share.findMany({
       where: {
         status: 'active',
         expiresAt: { gt: new Date() },
@@ -107,6 +107,14 @@ export const analyticsService = {
       orderBy: { createdAt: 'desc' },
       take: 20,
     });
+
+    const activeSharesList = activeSharesRaw.map((share) => ({
+      ...share,
+      files: share.files.map((file) => ({
+        ...file,
+        size: file.size ? file.size.toString() : '0',
+      })),
+    }));
 
     const totalDownloads = await prisma.download.count({
       where: { status: 'completed' },
