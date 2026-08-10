@@ -731,6 +731,15 @@ html.light .site-footer {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
+.upload-progress-card {
+  padding: 1.35rem 1.6rem !important;
+  border-radius: 1rem !important;
+  margin-top: 1.25rem !important;
+  border: 1px solid var(--border-primary) !important;
+  background: var(--bg-glass-strong) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
 .file-count-badge {
   display: inline-flex !important;
   align-items: center !important;

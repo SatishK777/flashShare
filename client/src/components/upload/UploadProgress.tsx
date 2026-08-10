@@ -22,29 +22,35 @@ export function UploadProgress() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass rounded-lg p-6 mt-6 border border-border-primary/60"
+      className="upload-progress-card glass premium-ring"
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <Loader2 className="animate-spin text-brand-500" size={20} />
-          <h3 className="font-medium text-text-primary">{statusText}</h3>
+      <div className="flex items-center justify-between gap-4 mb-4">
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="w-9 h-9 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center shrink-0">
+            <Loader2 className="animate-spin text-brand-500" size={20} />
+          </div>
+          <h3 className="font-semibold text-text-primary text-base truncate">{statusText}</h3>
         </div>
-        <div className="text-brand-500 font-semibold">{Math.round(overallProgress)}%</div>
+        <div className="text-brand-400 font-bold font-mono text-sm px-3.5 py-1 rounded-lg bg-brand-500/10 border border-brand-500/20 shrink-0">
+          {Math.round(overallProgress)}%
+        </div>
       </div>
 
-      <div className="h-2 w-full bg-bg-secondary rounded-md overflow-hidden mb-4 relative">
+      <div className="h-2.5 w-full bg-bg-secondary rounded-full overflow-hidden mb-4 relative p-0.5 border border-border-primary/50">
         <motion.div 
-          className="h-full gradient-bg absolute left-0 top-0"
+          className="h-full gradient-bg rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${overallProgress}%` }}
-          transition={{ ease: "linear", duration: 0.5 }}
+          transition={{ ease: "linear", duration: 0.3 }}
         />
       </div>
 
       {status === 'uploading' && (
-        <div className="flex justify-between text-xs text-text-secondary">
-          <div>{formatBytes(totalSpeed)}/s</div>
-          <div>{totalEta > 0 ? `~${Math.ceil(totalEta)}s remaining` : 'Calculating...'}</div>
+        <div className="flex justify-between items-center text-xs font-medium text-text-secondary px-1">
+          <span className="flex items-center gap-1.5 text-brand-400 font-semibold">
+            {formatBytes(totalSpeed)}/s
+          </span>
+          <span>{totalEta > 0 ? `~${Math.ceil(totalEta)}s remaining` : 'Calculating...'}</span>
         </div>
       )}
     </motion.div>
