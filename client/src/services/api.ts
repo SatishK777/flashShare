@@ -26,4 +26,5 @@ export const api = {
     return res.json();
   },
   finalizeShare: (shareId: string) => request<any>(`/shares/${shareId}/finalize`, { method: 'POST' }),
+  cancelShare: (shareId: string) => request<any>(`/shares/${shareId}`, { method: 'DELETE' }),
 };

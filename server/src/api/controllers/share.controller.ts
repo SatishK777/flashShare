@@ -40,14 +40,22 @@ export const getShare = async (req: Request, res: Response, next: NextFunction) 
 
 export const verifyPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { token } = req.params; // or could be shareId depending on route
-    // The spec says verifyPassword(shareId, password) but route has /:token/verify-password
-    // So we lookup share by token first
+    const { token } = req.params;
     const share = await shareService.getShareByToken(token);
     const { password } = req.body;
     
     await shareService.verifyPassword(share.id, password);
     res.json({ success: true, data: { verified: true } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const cancelShare = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const data = await shareService.cancelShare(id);
+    res.json({ success: true, data });
   } catch (error) {
     next(error);
   }
