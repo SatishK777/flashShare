@@ -172,8 +172,8 @@ export function CreateSharePage() {
           >
             <div className="absolute inset-x-0 top-0 h-1 gradient-bg" />
             
-            <div className="flex items-center gap-3.5 mb-7 sm:mb-8 relative z-10">
-              <div className="w-11 h-11 rounded-xl bg-bg-secondary flex items-center justify-center text-brand-500 border border-border-primary shadow-sm">
+            <div className="security-settings-header relative z-10">
+              <div className="w-11 h-11 rounded-xl bg-bg-secondary flex items-center justify-center text-brand-500 border border-border-primary shadow-sm shrink-0">
                 <Lock size={22} />
               </div>
               <div>
