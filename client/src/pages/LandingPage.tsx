@@ -32,33 +32,35 @@ export const LandingPage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md cursor-pointer"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-black/90 backdrop-blur-xl cursor-pointer"
             onClick={() => setIsVideoOpen(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-4xl bg-bg-primary border border-border-primary/80 rounded-2xl overflow-hidden shadow-2xl premium-ring cursor-default flex flex-col"
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+              className="video-modal-card cursor-default"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Modal Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-border-primary/60 bg-bg-secondary/60">
-                <div className="flex items-center gap-2.5 font-bold text-text-primary text-sm font-display">
-                  <Play size={16} className="text-brand-400 fill-brand-400" />
+              {/* Modal Header Bar */}
+              <div className="video-modal-header">
+                <div className="video-modal-title">
+                  <div className="w-8 h-8 rounded-lg bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center">
+                    <Play size={16} className="fill-brand-400" />
+                  </div>
                   <span>FlashShare Demo Walkthrough</span>
                 </div>
                 <button
                   onClick={() => setIsVideoOpen(false)}
-                  className="p-1.5 rounded-xl bg-bg-secondary hover:bg-bg-tertiary text-text-secondary hover:text-text-primary transition-colors border border-border-primary/50 cursor-pointer"
+                  className="video-modal-close-btn"
                   title="Close Video"
                 >
                   <X size={18} />
                 </button>
               </div>
 
-              {/* Video Player */}
+              {/* Video Player Container */}
               <div className="relative w-full aspect-video bg-black flex items-center justify-center">
                 <video
                   src="/videos/flashshare_demo.mp4"
