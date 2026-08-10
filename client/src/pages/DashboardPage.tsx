@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  BarChart3, 
   Activity, 
   Download, 
-  HardDrive, 
   Eye, 
   Plus, 
   CheckCircle,
@@ -349,22 +347,6 @@ export const DashboardPage: React.FC = () => {
             animate="show"
             className="dashboard-stats"
           >
-            {/* Total Shares */}
-            <motion.div variants={itemVariants} className="stat-card glass p-5 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 border border-border-primary/50 hover:border-brand-500/30 hover:shadow-lg hover:shadow-brand-500/10 premium-ring">
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-brand-500 to-transparent opacity-50" />
-              <div className="flex flex-col gap-4 relative z-10">
-                <div className="w-11 h-11 rounded-lg bg-brand-500/10 flex items-center justify-center text-brand-500 mb-1">
-                  <BarChart3 size={24} />
-                </div>
-                <div>
-                  <h3 className="font-medium text-text-secondary text-sm uppercase tracking-wider mb-1">Total Shares</h3>
-                  <div className="text-4xl font-display font-bold text-text-primary">
-                    {data.totalShares}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
             {/* Active Shares (Clickable) */}
             <motion.div 
               variants={itemVariants} 
@@ -413,22 +395,6 @@ export const DashboardPage: React.FC = () => {
                   <h3 className="font-medium text-text-secondary text-sm uppercase tracking-wider mb-1">Total Downloads</h3>
                   <div className="text-4xl font-display font-bold text-text-primary">
                     {data.totalDownloads}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Total Bandwidth */}
-            <motion.div variants={itemVariants} className="stat-card glass p-5 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 border border-border-primary/50 hover:border-brand-500/30 hover:shadow-lg hover:shadow-brand-500/10 premium-ring">
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-brand-500 to-transparent opacity-50" />
-              <div className="flex flex-col gap-4 relative z-10">
-                <div className="w-11 h-11 rounded-lg bg-brand-500/10 flex items-center justify-center text-brand-500 mb-1">
-                  <HardDrive size={24} />
-                </div>
-                <div>
-                  <h3 className="font-medium text-text-secondary text-sm uppercase tracking-wider mb-1">Bandwidth</h3>
-                  <div className="text-3xl lg:text-4xl font-display font-bold text-text-primary truncate" title={formatBytes(data.totalBandwidth)}>
-                    {formatBytes(data.totalBandwidth)}
                   </div>
                 </div>
               </div>
