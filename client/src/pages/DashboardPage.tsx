@@ -277,6 +277,7 @@ const itemVariants = {
 
 export const DashboardPage: React.FC = () => {
   const queryClient = useQueryClient();
+  const [activeSharesOpen, setActiveSharesOpen] = useState(false);
 
   const { data, isLoading, isError, isFetching } = useQuery<DashboardData>({
     queryKey: ['dashboard'],
@@ -354,8 +355,11 @@ export const DashboardPage: React.FC = () => {
             <motion.div 
               variants={itemVariants} 
               onClick={() => {
-                const el = document.getElementById('active-shares-manager');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                setActiveSharesOpen(true);
+                setTimeout(() => {
+                  const el = document.getElementById('active-shares-manager');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 50);
               }}
               className="stat-card glass p-5 relative overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300 border border-border-primary/50 hover:border-success-500/60 hover:shadow-lg hover:shadow-success-500/20 premium-ring"
             >
@@ -365,8 +369,8 @@ export const DashboardPage: React.FC = () => {
                   <div className="w-11 h-11 rounded-lg bg-success-500/10 flex items-center justify-center text-success-500">
                     <Activity size={24} />
                   </div>
-                  <span className="text-xs font-semibold text-success-500 bg-success-500/10 px-2.5 py-1 rounded-full border border-success-500/20 group-hover:scale-105 transition-transform">
-                    View Details →
+                  <span className="text-xs font-semibold text-success-500 bg-success-500/10 px-2.5 py-1 rounded-full border border-success-500/20 group-hover:scale-105 transition-transform flex items-center gap-1">
+                    View Details {activeSharesOpen ? '↑' : '→'}
                   </span>
                 </div>
                 <div>
@@ -425,7 +429,7 @@ export const DashboardPage: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
               className="activity-panel glass-strong overflow-hidden flex flex-col border border-border-primary/50 shadow-2xl premium-ring mb-8 rounded-2xl"
             >
-              <div className="activity-panel-header flex items-center justify-between p-5 sm:p-6 border-b border-border-primary/50">
+              <div className="activity-panel-header flex items-center justify-between p-5 sm:p-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-success-500/10 flex items-center justify-center text-success-500 border border-success-500/20 shadow-sm">
                     <Activity size={24} />
@@ -440,27 +444,47 @@ export const DashboardPage: React.FC = () => {
                     <p className="text-text-secondary text-sm mt-0.5">View active URLs, copy links, inspect files, or revoke access</p>
                   </div>
                 </div>
+
+                <button
+                  onClick={() => setActiveSharesOpen(!activeSharesOpen)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-secondary hover:bg-bg-secondary/80 text-text-primary text-xs font-bold border border-border-primary/60 transition-all cursor-pointer shadow-sm hover:border-brand-500/30 shrink-0"
+                >
+                  <span>{activeSharesOpen ? 'Hide Active Shares' : `Show Active Shares (${data.activeShares})`}</span>
+                  {activeSharesOpen ? <ChevronUp size={16} className="text-brand-400" /> : <ChevronDown size={16} className="text-brand-400" />}
+                </button>
               </div>
 
-              <div className="p-5 sm:p-6">
-                {data.activeSharesList && data.activeSharesList.length > 0 ? (
-                  <div className="flex flex-col gap-4">
-                    <AnimatePresence mode="popLayout">
-                      {data.activeSharesList.map((share) => (
-                        <ActiveShareRow key={share.id} share={share} onRevoke={handleRevokeShare} />
-                      ))}
-                    </AnimatePresence>
-                  </div>
-                ) : (
-                  <div className="py-14 flex flex-col items-center justify-center text-center">
-                    <div className="w-16 h-16 mb-4 rounded-2xl bg-bg-secondary flex items-center justify-center text-text-tertiary border border-border-primary/50">
-                      <Activity size={34} className="opacity-40" />
+              <AnimatePresence>
+                {activeSharesOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="overflow-hidden border-t border-border-primary/50"
+                  >
+                    <div className="p-5 sm:p-6">
+                      {data.activeSharesList && data.activeSharesList.length > 0 ? (
+                        <div className="flex flex-col gap-4">
+                          <AnimatePresence mode="popLayout">
+                            {data.activeSharesList.map((share) => (
+                              <ActiveShareRow key={share.id} share={share} onRevoke={handleRevokeShare} />
+                            ))}
+                          </AnimatePresence>
+                        </div>
+                      ) : (
+                        <div className="py-14 flex flex-col items-center justify-center text-center">
+                          <div className="w-16 h-16 mb-4 rounded-2xl bg-bg-secondary flex items-center justify-center text-text-tertiary border border-border-primary/50">
+                            <Activity size={34} className="opacity-40" />
+                          </div>
+                          <h3 className="text-xl font-display font-bold text-text-primary mb-2">No active shares right now</h3>
+                          <p className="text-text-secondary text-sm max-w-sm">When you create a new share, its live URL, QR code, and expiry will appear here for easy management.</p>
+                        </div>
+                      )}
                     </div>
-                    <h3 className="text-xl font-display font-bold text-text-primary mb-2">No active shares right now</h3>
-                    <p className="text-text-secondary text-sm max-w-sm">When you create a new share, its live URL, QR code, and expiry will appear here for easy management.</p>
-                  </div>
+                  </motion.div>
                 )}
-              </div>
+              </AnimatePresence>
             </motion.div>
           </div>
 
