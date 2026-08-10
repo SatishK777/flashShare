@@ -458,11 +458,11 @@ export const DashboardPage: React.FC = () => {
                         </div>
                       ) : (
                         <div className="dashboard-empty-state">
-                          <div className="dashboard-empty-state-icon text-text-tertiary">
-                            <Activity size={32} className="opacity-50 text-brand-400" />
+                          <div className="dashboard-empty-state-icon">
+                            <Activity size={34} className="text-brand-400" />
                           </div>
-                          <h3 className="text-xl font-display font-bold text-text-primary mb-2">No active shares on this device</h3>
-                          <p className="text-text-secondary text-sm max-w-sm">When you create a new share on this browser, its live URL, QR code, and expiry will appear here for private management.</p>
+                          <h3 className="dashboard-empty-state-title">No active shares on this device</h3>
+                          <p className="dashboard-empty-state-desc">When you create a new share on this browser, its live URL, QR code, and expiry will appear here for private management.</p>
                         </div>
                       )}
                     </div>
@@ -526,11 +526,11 @@ export const DashboardPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="dashboard-empty-state">
-                  <div className="dashboard-empty-state-icon text-text-tertiary">
-                    <Activity size={32} className="opacity-50 text-brand-400" />
+                  <div className="dashboard-empty-state-icon">
+                    <Activity size={34} className="text-brand-400" />
                   </div>
-                  <h3 className="text-xl font-display font-bold text-text-primary mb-2">No recent activity on this device</h3>
-                  <p className="text-text-secondary text-sm max-w-sm">When views or downloads occur on shares created from this browser, live event logs will appear here.</p>
+                  <h3 className="dashboard-empty-state-title">No recent activity on this device</h3>
+                  <p className="dashboard-empty-state-desc">When views or downloads occur on shares created from this browser, live event logs will appear here.</p>
                 </div>
               )}
             </div>
