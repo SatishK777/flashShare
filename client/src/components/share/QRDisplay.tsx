@@ -343,10 +343,34 @@ export function QRDisplay() {
           </div>
             
           <div className="qr-actions">
-              <Button variant="outline" size="sm" className="qr-action-button" onClick={() => window.open(`mailto:?body=${shareUrl}`)}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="qr-action-button" 
+                onClick={() => window.open(`mailto:?subject=FlashShare%20File%20Transfer&body=${encodeURIComponent(shareUrl)}`)}
+              >
                 <Mail size={16} className="mr-2" /> Email
               </Button>
-              <Button variant="outline" size="sm" className="qr-action-button" onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareUrl)}`)}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="qr-action-button" 
+                onClick={async () => {
+                  if (navigator.share) {
+                    try {
+                      await navigator.share({
+                        title: 'FlashShare Transfer',
+                        text: 'Download files shared securely with FlashShare:',
+                        url: shareUrl,
+                      });
+                    } catch (err) {
+                      // Fallback if user cancels or share fails
+                    }
+                  } else {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(shareUrl)}`);
+                  }
+                }}
+              >
                 <Share2 size={16} className="mr-2" /> Share
               </Button>
           </div>

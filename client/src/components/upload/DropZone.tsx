@@ -51,8 +51,8 @@ export function DropZone({ compact = false }: DropZoneProps) {
       <h3 className={cn("font-display font-semibold text-text-primary", compact ? "text-lg mb-1" : "text-2xl mb-2")}>
         {isDragActive ? "Drop files now" : "Drop files here"}
       </h3>
-      <p className="text-text-secondary mb-4 max-w-sm">
-        or click to browse from your computer
+      <p className="text-text-secondary mb-4 max-w-sm text-sm sm:text-base">
+        or tap to select files from your device
       </p>
       {!compact && (
         <div className="text-xs text-text-tertiary rounded-md border border-border-primary bg-bg-secondary/60 px-3 py-1.5">

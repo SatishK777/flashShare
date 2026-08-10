@@ -1320,7 +1320,7 @@ html.light .receiver-download-panel {
   .page-container,
   .page-container-wide,
   .nav-shell {
-    width: min(calc(100% - 32px), 100%);
+    width: min(calc(100% - 24px), 100%);
   }
 
   .landing-hero {
@@ -1329,11 +1329,11 @@ html.light .receiver-download-panel {
   }
 
   .landing-section {
-    padding: 3.5rem 0;
+    padding: 3rem 0;
   }
 
   .hero-title {
-    font-size: clamp(2.5rem, 13vw, 3.4rem);
+    font-size: clamp(2.2rem, 11vw, 3.2rem);
   }
 
   .create-grid {
@@ -1341,17 +1341,29 @@ html.light .receiver-download-panel {
   }
 
   .settings-row {
-    grid-template-columns: 1fr;
-    gap: 0.65rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .settings-select {
+    min-width: 8rem;
+    max-width: 10.5rem;
+    height: 2.4rem;
+    font-size: 0.875rem;
   }
 
   .cta-content {
     grid-template-columns: 1fr;
-    padding: 2rem;
+    padding: 1.5rem;
   }
 
   .cta-actions {
     min-width: 0;
+    width: 100%;
   }
 
   .footer-bottom {
@@ -1360,55 +1372,66 @@ html.light .receiver-download-panel {
   }
 
   .drop-zone {
-    padding: 3rem 1.25rem;
+    padding: 2.75rem 1.25rem;
   }
 
   .drop-zone-compact {
-    padding: 1.5rem 1rem;
-  }
-
-  .settings-select {
-    width: 100%;
-    max-width: none;
+    padding: 1.35rem 1rem;
   }
 
   .activity-item {
-    grid-template-columns: auto minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.85rem;
   }
 
   .activity-time {
-    grid-column: 2;
-    justify-self: start;
+    align-self: flex-start;
   }
 
   .qr-share-card {
     padding: 1.1rem;
-    gap: 1.1rem;
+    gap: 1.25rem;
   }
 
   .receiver-page {
-    padding: 1.25rem 0 3rem;
+    padding: 1rem 0 2.5rem;
   }
 
   .receiver-shell {
-    width: min(calc(100% - 32px), 100%);
+    width: min(calc(100% - 20px), 100%);
   }
 
   .receiver-card {
-    padding: 1.25rem;
+    padding: 1.15rem;
+  }
+
+  .receiver-file-list {
+    max-height: 50vh;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .receiver-file-row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: 0.75rem 0.85rem;
+    gap: 0.75rem;
   }
 
   .qr-visual-panel {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
   }
 
   .qr-code-frame {
-    padding: 0.75rem;
+    padding: 0.65rem;
+    max-width: 100%;
   }
 
   .qr-code-frame svg {
-    width: 190px;
-    height: 190px;
+    width: 180px;
+    height: 180px;
+    max-width: 100%;
   }
 
   .qr-actions,
@@ -1423,15 +1446,7 @@ html.light .receiver-download-panel {
   .qr-meta-row {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  .receiver-file-row {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .receiver-file-download {
-    grid-column: 2;
-    justify-self: start;
+    gap: 0.75rem;
   }
 
   .steps-grid,
@@ -1439,6 +1454,37 @@ html.light .receiver-download-panel {
   .dashboard-stats,
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2.15rem;
+  }
+
+  .qr-code-frame svg {
+    width: 160px;
+    height: 160px;
+  }
+
+  .receiver-header h2 {
+    font-size: 1.65rem;
+  }
+
+  .receiver-badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.65rem;
+  }
+
+  .settings-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .settings-select {
+    min-width: 100%;
+    max-width: 100%;
   }
 }
 

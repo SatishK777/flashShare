@@ -81,7 +81,7 @@ export function FileList() {
                 {!isUploading && (
                   <button
                     onClick={() => removeFile(file.id)}
-                    className="relative z-10 p-2 text-text-tertiary hover:text-error-500 hover:bg-error-500/10 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                    className="relative z-10 p-2 text-text-tertiary hover:text-error-500 hover:bg-error-500/10 rounded-md transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 min-w-[36px] min-h-[36px] flex items-center justify-center"
                     aria-label="Remove file"
                   >
                     <X size={18} />
