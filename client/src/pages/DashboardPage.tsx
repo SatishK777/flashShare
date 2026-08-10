@@ -134,45 +134,49 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, height: 0 }}
-      className="glass rounded-xl p-4 border border-border-primary/60 hover:border-brand-500/30 transition-all flex flex-col gap-3"
+      className="glass-strong rounded-2xl p-5 sm:p-6 border border-[var(--border-glass)] hover:border-brand-500/30 transition-all duration-300 shadow-xl flex flex-col gap-4 relative overflow-hidden"
     >
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="p-2.5 rounded-lg bg-brand-500/10 text-brand-500 border border-brand-500/20 shrink-0">
-            <ShieldCheck size={20} />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Left Info Column */}
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="w-11 h-11 rounded-xl bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center justify-center shrink-0 shadow-sm">
+            <ShieldCheck size={22} />
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="font-mono font-bold text-text-primary text-sm truncate">{share.token}</span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-success-500/10 text-success-500 text-xs font-semibold border border-success-500/20">
-                🟢 Active
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="font-mono font-bold text-text-primary text-base tracking-wide truncate">
+                {share.token}
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success-500/10 text-success-500 text-xs font-bold border border-success-500/25 shrink-0">
+                <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
+                Active
               </span>
             </div>
-            <p className="text-xs text-text-secondary mt-0.5 truncate">
+            <p className="text-xs text-text-secondary mt-1 font-medium truncate">
               {share.files.length} {share.files.length === 1 ? 'file' : 'files'} • {formatBytes(totalSize)}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Action Controls */}
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
           <Button
             size="sm"
-            variant="outline"
             onClick={handleCopy}
-            className="h-9 px-3 rounded-lg text-xs font-semibold gap-1.5"
+            className="h-10 px-4 rounded-xl text-xs font-bold gap-2 bg-brand-500/10 text-brand-400 border border-brand-500/25 hover:bg-brand-500/20 active:scale-95 transition-all shadow-sm"
           >
-            {copied ? <CheckCircle size={14} className="text-success-500" /> : <Copy size={14} />}
-            {copied ? 'Copied' : 'Copy URL'}
+            {copied ? <CheckCircle size={15} className="text-success-500" /> : <Copy size={15} />}
+            {copied ? 'Copied' : 'Copy Link'}
           </Button>
 
           <Button
             size="sm"
             variant="outline"
             onClick={() => window.open(fullUrl, '_blank')}
-            className="h-9 w-9 p-0 rounded-lg text-text-secondary hover:text-brand-400"
+            className="h-10 w-10 p-0 rounded-xl bg-bg-secondary text-text-secondary border border-border-primary hover:text-brand-400 hover:border-brand-500/30 transition-all"
             title="Open Share"
           >
-            <ExternalLink size={14} />
+            <ExternalLink size={15} />
           </Button>
 
           <Button
@@ -180,32 +184,37 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
             variant="outline"
             onClick={handleRevoke}
             disabled={revoking}
-            className="h-9 w-9 p-0 rounded-lg text-error-500 hover:bg-error-500/10 border-error-500/20"
+            className="h-10 w-10 p-0 rounded-xl bg-error-500/10 text-error-500 border border-error-500/25 hover:bg-error-500/20 transition-all"
             title="Revoke Share"
           >
-            <Trash2 size={14} />
+            <Trash2 size={15} />
           </Button>
 
           <button
             onClick={() => setExpanded(!expanded)}
-            className="p-2 text-text-tertiary hover:text-text-primary rounded-lg transition-colors"
+            className="h-10 w-10 flex items-center justify-center text-text-tertiary hover:text-text-primary bg-bg-secondary/60 hover:bg-bg-secondary rounded-xl border border-border-primary/60 transition-all"
+            title={expanded ? "Collapse details" : "Expand details"}
           >
-            {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
           </button>
         </div>
       </div>
 
-      {/* Details Row */}
-      <div className="flex flex-wrap items-center gap-4 text-xs text-text-secondary pt-2 border-t border-border-primary/40">
-        <span className="flex items-center gap-1">
-          <Clock size={13} className="text-brand-500" />
-          Expires in: <strong className="text-text-primary font-bold">{timeLeft}</strong>
-        </span>
-        <span>•</span>
-        <span className="flex items-center gap-1">
-          <Download size={13} className="text-brand-500" />
-          Downloads: <strong className="text-text-primary font-bold">{share.downloadCount} {share.maxDownloads > 0 ? `/ ${share.maxDownloads}` : '(Unlimited)'}</strong>
-        </span>
+      {/* Metrics Bar Pills (NO harsh border line across) */}
+      <div className="flex flex-wrap items-center gap-2.5 pt-1">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-bg-secondary/70 border border-border-primary/60 text-xs font-medium text-text-secondary shadow-sm">
+          <Clock size={14} className="text-brand-400" />
+          <span>Expires in:</span>
+          <strong className="text-text-primary font-bold">{timeLeft}</strong>
+        </div>
+
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-bg-secondary/70 border border-border-primary/60 text-xs font-medium text-text-secondary shadow-sm">
+          <Download size={14} className="text-brand-400" />
+          <span>Downloads:</span>
+          <strong className="text-text-primary font-bold">
+            {share.downloadCount} {share.maxDownloads > 0 ? `/ ${share.maxDownloads}` : '(Unlimited)'}
+          </strong>
+        </div>
       </div>
 
       {/* Expanded File List & QR */}
@@ -215,22 +224,24 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex flex-col sm:flex-row items-center gap-4 pt-3 border-t border-border-primary/40"
+            className="flex flex-col md:flex-row items-stretch gap-5 pt-4 border-t border-border-primary/40 mt-1"
           >
-            <div className="p-2 bg-white rounded-lg shrink-0 shadow-md">
-              <QRCodeSVG value={fullUrl} size={110} level="M" />
+            <div className="p-3 bg-white rounded-xl shrink-0 shadow-lg flex items-center justify-center self-center md:self-start">
+              <QRCodeSVG value={fullUrl} size={128} level="M" />
             </div>
 
-            <div className="flex-grow min-w-0 w-full">
-              <h4 className="text-xs font-bold text-text-tertiary uppercase tracking-wider mb-2">Files Included</h4>
-              <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto">
+            <div className="flex-grow min-w-0 w-full flex flex-col justify-center gap-2">
+              <h4 className="text-xs font-extrabold text-text-tertiary uppercase tracking-wider">Files Included ({share.files.length})</h4>
+              <div className="flex flex-col gap-2 max-h-44 overflow-y-auto pr-1">
                 {share.files.map((f) => (
-                  <div key={f.id} className="flex items-center justify-between gap-2 p-2 rounded-lg bg-bg-secondary/60 text-xs">
-                    <span className="flex items-center gap-2 truncate font-medium text-text-primary">
-                      <FileText size={14} className="text-brand-500 shrink-0" />
+                  <div key={f.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-bg-secondary/70 border border-border-primary/50 text-xs shadow-sm">
+                    <span className="flex items-center gap-2.5 truncate font-medium text-text-primary min-w-0">
+                      <FileText size={16} className="text-brand-400 shrink-0" />
                       <span className="truncate">{share.showFilenames ? f.originalName : `File ${f.id.substring(0, 4)}`}</span>
                     </span>
-                    <span className="text-text-tertiary shrink-0">{formatBytes(parseInt(f.size, 10))}</span>
+                    <span className="text-text-tertiary font-semibold shrink-0 bg-bg-primary px-2.5 py-1 rounded-lg border border-border-primary/40">
+                      {formatBytes(parseInt(f.size, 10))}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -418,28 +429,28 @@ export const DashboardPage: React.FC = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-              className="activity-panel glass overflow-hidden flex flex-col border border-border-primary/50 shadow-xl premium-ring mb-8"
+              className="activity-panel glass-strong overflow-hidden flex flex-col border border-border-primary/50 shadow-2xl premium-ring mb-8 rounded-2xl"
             >
-              <div className="activity-panel-header flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-lg bg-success-500/10 flex items-center justify-center text-success-500">
-                    <Activity size={22} />
+              <div className="activity-panel-header flex items-center justify-between p-5 sm:p-6 border-b border-border-primary/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-success-500/10 flex items-center justify-center text-success-500 border border-success-500/20 shadow-sm">
+                    <Activity size={24} />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-display font-semibold text-text-primary flex items-center gap-2">
+                    <h2 className="text-2xl font-display font-bold text-text-primary flex items-center gap-3">
                       Active Shares Manager
-                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-success-500/10 text-success-500 border border-success-500/20">
+                      <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-success-500/10 text-success-500 border border-success-500/25">
                         {data.activeShares} Live
                       </span>
                     </h2>
-                    <p className="text-text-secondary text-sm">View active URLs, copy links, inspect files, or revoke access</p>
+                    <p className="text-text-secondary text-sm mt-0.5">View active URLs, copy links, inspect files, or revoke access</p>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 sm:p-6">
+              <div className="p-5 sm:p-6">
                 {data.activeSharesList && data.activeSharesList.length > 0 ? (
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-4">
                     <AnimatePresence mode="popLayout">
                       {data.activeSharesList.map((share) => (
                         <ActiveShareRow key={share.id} share={share} onRevoke={handleRevokeShare} />
@@ -447,11 +458,11 @@ export const DashboardPage: React.FC = () => {
                     </AnimatePresence>
                   </div>
                 ) : (
-                  <div className="py-12 flex flex-col items-center justify-center text-center">
-                    <div className="w-16 h-16 mb-4 rounded-xl bg-bg-secondary/50 flex items-center justify-center text-text-tertiary">
-                      <Activity size={32} className="opacity-40" />
+                  <div className="py-14 flex flex-col items-center justify-center text-center">
+                    <div className="w-16 h-16 mb-4 rounded-2xl bg-bg-secondary flex items-center justify-center text-text-tertiary border border-border-primary/50">
+                      <Activity size={34} className="opacity-40" />
                     </div>
-                    <h3 className="text-xl font-display font-semibold text-text-primary mb-2">No active shares right now</h3>
+                    <h3 className="text-xl font-display font-bold text-text-primary mb-2">No active shares right now</h3>
                     <p className="text-text-secondary text-sm max-w-sm">When you create a new share, its live URL, QR code, and expiry will appear here for easy management.</p>
                   </div>
                 )}
@@ -464,21 +475,21 @@ export const DashboardPage: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
-            className="activity-panel glass overflow-hidden flex flex-col border border-border-primary/50 shadow-xl premium-ring"
+            className="activity-panel glass overflow-hidden flex flex-col border border-border-primary/50 shadow-xl premium-ring rounded-2xl"
           >
-            <div className="activity-panel-header">
-              <div className="w-11 h-11 rounded-lg bg-brand-500/10 flex items-center justify-center text-brand-500">
-                <Activity size={22} />
+            <div className="activity-panel-header p-5 sm:p-6 border-b border-border-primary/50">
+              <div className="w-12 h-12 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-500 border border-brand-500/20 shadow-sm">
+                <Activity size={24} />
               </div>
               <div>
-                <h2 className="text-2xl font-display font-semibold text-text-primary">Recent Activity</h2>
-                <p className="text-text-secondary text-sm">Latest events across all your shares</p>
+                <h2 className="text-2xl font-display font-bold text-text-primary">Recent Activity</h2>
+                <p className="text-text-secondary text-sm mt-0.5">Latest events across all your shares</p>
               </div>
             </div>
             
             <div>
               {data.recentActivity && data.recentActivity.length > 0 ? (
-                <div className="activity-list">
+                <div className="activity-list p-5">
                   <AnimatePresence mode="popLayout">
                     {data.recentActivity.map((event, index) => {
                       const { icon: EventIcon, text, color, bg } = getEventDisplay(event.eventType);
@@ -492,18 +503,18 @@ export const DashboardPage: React.FC = () => {
                           transition={{ duration: 0.4, delay: index * 0.05 }}
                           className="activity-item group"
                         >
-                          <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${bg} ${color} group-hover:scale-105 transition-transform duration-300`}>
-                            <EventIcon size={24} />
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${bg} ${color} group-hover:scale-105 transition-transform duration-300 border border-border-primary/30`}>
+                            <EventIcon size={22} />
                           </div>
                           
                           <div className="min-w-0">
-                            <p className="font-semibold text-text-primary text-lg">{text}</p>
-                            <p className="text-sm text-text-tertiary truncate font-mono mt-1">
+                            <p className="font-semibold text-text-primary text-base">{text}</p>
+                            <p className="text-xs text-text-tertiary truncate font-mono mt-0.5">
                               Share ID: {event.shareId.substring(0, 12)}...
                             </p>
                           </div>
 
-                          <div className="activity-time text-sm text-text-secondary whitespace-nowrap font-medium bg-bg-secondary/50 border border-border-primary/50">
+                          <div className="activity-time text-xs text-text-secondary whitespace-nowrap font-semibold bg-bg-secondary px-3 py-1.5 rounded-xl border border-border-primary/60 shadow-sm">
                             {timeAgo(event.createdAt)}
                           </div>
                         </motion.div>
@@ -513,11 +524,11 @@ export const DashboardPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="py-20 flex flex-col items-center justify-center text-center">
-                  <div className="w-24 h-24 mb-8 rounded-lg bg-bg-secondary/50 flex items-center justify-center text-text-tertiary">
+                  <div className="w-24 h-24 mb-8 rounded-2xl bg-bg-secondary/50 flex items-center justify-center text-text-tertiary border border-border-primary/40">
                     <Activity size={56} className="opacity-40" />
                   </div>
-                  <h3 className="text-2xl font-display font-semibold text-text-primary mb-3">No activity yet</h3>
-                  <p className="text-text-secondary text-lg max-w-sm">When your shares are viewed or downloaded, the events will appear here in real-time.</p>
+                  <h3 className="text-2xl font-display font-bold text-text-primary mb-3">No activity yet</h3>
+                  <p className="text-text-secondary text-base max-w-sm">When your shares are viewed or downloaded, the events will appear here in real-time.</p>
                 </div>
               )}
             </div>
