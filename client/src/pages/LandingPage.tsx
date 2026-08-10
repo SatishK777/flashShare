@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Upload, QrCode, Download, Shield, Wifi, RefreshCw, HardDrive, Timer, Activity, ArrowRight, CheckCircle2, QrCode as QrCodeIcon } from 'lucide-react';
+import { Upload, QrCode, Download, Shield, Wifi, RefreshCw, HardDrive, Timer, Activity, ArrowRight, CheckCircle2, QrCode as QrCodeIcon, Play, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 
 
@@ -18,10 +18,60 @@ const FadeIn = ({ children, delay = 0, yOffset = 30 }: { children: React.ReactNo
 };
 
 export const LandingPage: React.FC = () => {
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
   return (
     <div className="flex flex-col w-full min-h-screen">
       <div className="ambient-bg"></div>
       <div className="noise-overlay"></div>
+      
+      {/* Video Modal */}
+      <AnimatePresence>
+        {isVideoOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md cursor-pointer"
+            onClick={() => setIsVideoOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-4xl bg-bg-primary border border-border-primary/80 rounded-2xl overflow-hidden shadow-2xl premium-ring cursor-default flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-border-primary/60 bg-bg-secondary/60">
+                <div className="flex items-center gap-2.5 font-bold text-text-primary text-sm font-display">
+                  <Play size={16} className="text-brand-400 fill-brand-400" />
+                  <span>FlashShare Demo Walkthrough</span>
+                </div>
+                <button
+                  onClick={() => setIsVideoOpen(false)}
+                  className="p-1.5 rounded-xl bg-bg-secondary hover:bg-bg-tertiary text-text-secondary hover:text-text-primary transition-colors border border-border-primary/50 cursor-pointer"
+                  title="Close Video"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Video Player */}
+              <div className="relative w-full aspect-video bg-black flex items-center justify-center">
+                <video
+                  src="/videos/flashshare_demo.mp4"
+                  controls
+                  autoPlay
+                  playsInline
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Hero Section */}
       <section className="landing-hero relative overflow-hidden z-10">
@@ -70,8 +120,14 @@ export const LandingPage: React.FC = () => {
                 Start Sharing <ArrowRight className="ml-3 w-5 h-5" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="hero-button h-14 text-base font-semibold rounded-lg w-full sm:w-auto glass-strong hover:bg-[var(--bg-tertiary)] border-[var(--border-glass)] text-[var(--text-primary)] transition-all duration-300">
-              See How It Works
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={() => setIsVideoOpen(true)}
+              className="hero-button h-14 text-base font-semibold rounded-lg w-full sm:w-auto glass-strong hover:bg-[var(--bg-tertiary)] border-[var(--border-glass)] text-[var(--text-primary)] transition-all duration-300 gap-2"
+            >
+              <Play size={18} className="text-brand-400 fill-brand-400/20" />
+              <span>See How It Works</span>
             </Button>
           </motion.div>
         </div>
