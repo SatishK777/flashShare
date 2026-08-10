@@ -126,7 +126,7 @@ export const Navbar: React.FC = () => {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '-100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="fixed inset-x-0 top-0 z-50 bg-[var(--bg-glass-strong)] border-b border-[var(--border-glass)] shadow-2xl p-5 sm:p-6 pb-10 sm:pb-8 md:hidden flex flex-col gap-5 max-h-[88vh] overflow-y-auto rounded-b-3xl"
+              className="mobile-nav-drawer md:hidden"
             >
               {/* Drawer Header */}
               <div className="flex justify-between items-center pb-4 border-b border-[var(--border-primary)]">
