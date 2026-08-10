@@ -228,12 +228,12 @@ function ActiveShareRow({ share, onRevoke }: { share: ActiveShareItem; onRevoke:
               <h4 className="text-xs font-extrabold text-text-tertiary uppercase tracking-wider">Files Included ({share.files.length})</h4>
               <div className="flex flex-col gap-2 max-h-44 overflow-y-auto pr-1">
                 {share.files.map((f) => (
-                  <div key={f.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-bg-secondary/70 border border-border-primary/50 text-xs shadow-sm">
+                  <div key={f.id} className="active-share-file-item">
                     <span className="flex items-center gap-2.5 truncate font-medium text-text-primary min-w-0">
                       <FileText size={16} className="text-brand-400 shrink-0" />
                       <span className="truncate">{share.showFilenames ? f.originalName : `File ${f.id.substring(0, 4)}`}</span>
                     </span>
-                    <span className="text-text-tertiary font-semibold shrink-0 bg-bg-primary px-2.5 py-1 rounded-lg border border-border-primary/40">
+                    <span className="text-text-tertiary font-semibold shrink-0 bg-bg-primary px-3 py-1 rounded-lg border border-border-primary/40">
                       {formatBytes(parseInt(f.size, 10))}
                     </span>
                   </div>
@@ -369,7 +369,7 @@ export const DashboardPage: React.FC = () => {
                   <div className="w-11 h-11 rounded-lg bg-success-500/10 flex items-center justify-center text-success-500">
                     <Activity size={24} />
                   </div>
-                  <span className="text-xs font-semibold text-success-500 bg-success-500/10 px-2.5 py-1 rounded-full border border-success-500/20 group-hover:scale-105 transition-transform flex items-center gap-1">
+                  <span className="active-shares-view-badge">
                     View Details {activeSharesOpen ? '↑' : '→'}
                   </span>
                 </div>
@@ -447,7 +447,7 @@ export const DashboardPage: React.FC = () => {
 
                 <button
                   onClick={() => setActiveSharesOpen(!activeSharesOpen)}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-secondary hover:bg-bg-secondary/80 text-text-primary text-xs font-bold border border-border-primary/60 transition-all cursor-pointer shadow-sm hover:border-brand-500/30 shrink-0"
+                  className="active-shares-toggle-btn shrink-0"
                 >
                   <span>{activeSharesOpen ? 'Hide Active Shares' : `Show Active Shares (${data.activeShares})`}</span>
                   {activeSharesOpen ? <ChevronUp size={16} className="text-brand-400" /> : <ChevronDown size={16} className="text-brand-400" />}
