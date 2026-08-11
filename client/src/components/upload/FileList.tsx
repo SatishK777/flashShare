@@ -26,15 +26,15 @@ export function FileList() {
   if (files.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-4 mt-6">
-      <div className="flex justify-between items-center px-1">
-        <h3 className="font-display font-medium text-lg text-text-primary">Selected Files</h3>
-        <span className="file-count-badge">
+    <div className="flex flex-col gap-4 mt-6 w-full min-w-0 max-w-full overflow-hidden">
+      <div className="flex justify-between items-center px-1 gap-2 w-full min-w-0">
+        <h3 className="font-display font-medium text-base sm:text-lg text-text-primary shrink-0">Selected Files</h3>
+        <span className="file-count-badge truncate shrink min-w-0 max-w-[55%] text-xs">
           {files.length} {files.length === 1 ? 'file' : 'files'} • {formatBytes(totalSize())}
         </span>
       </div>
       
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 w-full min-w-0 max-w-full overflow-hidden">
         <AnimatePresence mode="popLayout">
           {files.map((file) => {
             const Icon = getFileIcon(file.type);
@@ -45,7 +45,7 @@ export function FileList() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
                 key={file.id}
-                className="glass rounded-lg p-3 pr-3.5 sm:pr-4 flex items-center gap-3 sm:gap-4 relative overflow-hidden group border border-border-primary/60 w-full min-w-0 max-w-full box-border"
+                className="glass rounded-lg p-3 pr-3 flex items-center gap-3 relative overflow-hidden group border border-border-primary/60 w-full min-w-0 max-w-full box-border"
               >
                 {/* Background progress bar during upload */}
                 {isUploading && (
@@ -55,19 +55,19 @@ export function FileList() {
                   />
                 )}
                 
-                <div className="relative z-10 w-12 h-12 rounded-md bg-bg-secondary flex items-center justify-center shrink-0 overflow-hidden border border-border-primary">
+                <div className="relative z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-md bg-bg-secondary flex items-center justify-center shrink-0 overflow-hidden border border-border-primary">
                   {file.preview ? (
                     <img src={file.preview} alt={file.name} className="w-full h-full object-cover" />
                   ) : (
-                    <Icon className="text-brand-500" size={24} />
+                    <Icon className="text-brand-500 shrink-0" size={22} />
                   )}
                 </div>
                 
-                <div className="relative z-10 flex-grow min-w-0 flex flex-col justify-center">
-                  <div className="font-medium text-text-primary truncate" title={file.name}>
+                <div className="relative z-10 flex-grow min-w-0 overflow-hidden">
+                  <div className="font-medium text-text-primary truncate text-sm sm:text-base" title={file.name}>
                     {file.name}
                   </div>
-                  <div className="text-xs text-text-secondary flex items-center gap-2">
+                  <div className="text-xs text-text-secondary flex items-center gap-2 truncate">
                     <span>{formatBytes(file.size)}</span>
                     {isUploading && file.status === 'uploading' && (
                       <>
@@ -81,7 +81,7 @@ export function FileList() {
                 {!isUploading && (
                   <button
                     onClick={() => removeFile(file.id)}
-                    className="relative z-10 p-2 text-text-tertiary hover:text-error-500 hover:bg-error-500/10 rounded-md transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 min-w-[36px] min-h-[36px] flex items-center justify-center"
+                    className="relative z-10 p-1.5 text-text-tertiary hover:text-error-500 hover:bg-error-500/10 rounded-md transition-colors shrink-0 ml-auto min-w-[32px] min-h-[32px] flex items-center justify-center"
                     aria-label="Remove file"
                   >
                     <X size={18} />

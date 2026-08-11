@@ -135,15 +135,15 @@ export function CreateSharePage() {
         </div>
       </motion.div>
 
-      <div className="create-grid">
+      <div className="create-grid w-full min-w-0 max-w-full overflow-hidden">
         {/* Left Column: Files */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 w-full min-w-0 max-w-full overflow-hidden">
           <motion.div 
             layout 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
-            className="relative"
+            className="relative w-full min-w-0 max-w-full overflow-hidden"
           >
             <div className="absolute inset-0 bg-brand-500/5 rounded-lg blur-xl -z-10" />
             <DropZone compact={hasFiles} />
@@ -155,6 +155,7 @@ export function CreateSharePage() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
+                className="w-full min-w-0 max-w-full overflow-hidden"
               >
                 <UploadProgress />
               </motion.div>
@@ -163,7 +164,7 @@ export function CreateSharePage() {
         </div>
 
         {/* Right Column: Settings */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 w-full min-w-0 max-w-full overflow-hidden">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
