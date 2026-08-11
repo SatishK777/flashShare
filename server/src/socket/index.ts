@@ -5,6 +5,7 @@ import { env } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 import { EVENTS } from "./events.js";
 import { shareService } from "../services/share.service.js";
+import { shareRepository } from "../repositories/share.repository.js";
 
 let ioInstance: SocketIOServer;
 
@@ -82,13 +83,14 @@ export const initializeSocket = (httpServer: HttpServer) => {
     });
 
     socket.on(EVENTS.DOWNLOAD_COMPLETED, async (roomId: string) => {
-      logger.info(`Download completed in socket room ${roomId}`);
-      const result = await shareService.recordDownload(roomId);
+      logger.info(`Download completed event broadcasted in socket room ${roomId}`);
+      const share = await shareRepository.findById(roomId);
+      const isUnlimited = share ? (share.maxDownloads === 0 || share.maxDownloads === -1) : true;
       ioInstance.to(roomId).emit(EVENTS.DOWNLOAD_COMPLETED, {
         timestamp: new Date(),
-        downloadCount: result?.downloadCount ?? 1,
-        maxDownloads: result?.maxDownloads ?? 0,
-        isFullyCompleted: result?.isFullyCompleted ?? false,
+        downloadCount: share?.downloadCount ?? 1,
+        maxDownloads: share?.maxDownloads ?? 0,
+        isFullyCompleted: share ? (!isUnlimited && share.downloadCount >= share.maxDownloads) : false,
       });
     });
 

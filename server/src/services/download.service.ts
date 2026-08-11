@@ -33,9 +33,6 @@ export class DownloadService {
       userAgent,
     });
 
-    // Increment download count
-    await shareRepository.incrementDownloadCount(shareId);
-
     // Log analytics
     await analyticsService.logEvent(shareId, 'download_started', null, ipHash, userAgent);
 
