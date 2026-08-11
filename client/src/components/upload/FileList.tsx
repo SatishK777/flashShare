@@ -45,7 +45,7 @@ export function FileList() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
                 key={file.id}
-                className="glass rounded-lg p-3 pr-4 flex items-center gap-4 relative overflow-hidden group border border-border-primary/60"
+                className="glass rounded-lg p-3 pr-3.5 sm:pr-4 flex items-center gap-3 sm:gap-4 relative overflow-hidden group border border-border-primary/60 w-full min-w-0 max-w-full box-border"
               >
                 {/* Background progress bar during upload */}
                 {isUploading && (

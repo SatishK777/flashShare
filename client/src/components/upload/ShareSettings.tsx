@@ -11,12 +11,12 @@ export function ShareSettingsPanel() {
   const disabled = isUploading;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3 sm:gap-4 w-full min-w-0 max-w-full">
         {/* Expiration */}
         <div className="settings-row">
-          <div className="flex items-center gap-3">
-            <Clock size={18} className="text-brand-500" />
-            <label className="text-sm font-medium text-text-primary">Expires in</label>
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 shrink">
+            <Clock size={18} className="text-brand-500 shrink-0" />
+            <label className="text-xs sm:text-sm font-medium text-text-primary truncate">Expires in</label>
           </div>
           <select
             disabled={disabled}
@@ -35,9 +35,9 @@ export function ShareSettingsPanel() {
 
         {/* Max Downloads */}
         <div className="settings-row">
-          <div className="flex items-center gap-3">
-            <Download size={18} className="text-brand-500" />
-            <label className="text-sm font-medium text-text-primary">Max downloads</label>
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 shrink">
+            <Download size={18} className="text-brand-500 shrink-0" />
+            <label className="text-xs sm:text-sm font-medium text-text-primary truncate">Max downloads</label>
           </div>
           <select
             disabled={disabled}
@@ -54,9 +54,9 @@ export function ShareSettingsPanel() {
 
         {/* Auto Delete */}
         <div className="settings-row">
-          <div className="flex items-center gap-3">
-            <Trash2 size={18} className="text-brand-500" />
-            <label className="text-sm font-medium text-text-primary">Auto delete</label>
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 shrink">
+            <Trash2 size={18} className="text-brand-500 shrink-0" />
+            <label className="text-xs sm:text-sm font-medium text-text-primary truncate">Auto delete</label>
           </div>
           <select
             disabled={disabled}
@@ -72,16 +72,16 @@ export function ShareSettingsPanel() {
 
         {/* Show Filenames */}
         <div className="settings-row">
-          <div className="flex items-center gap-3">
-            <Eye size={18} className="text-brand-500" />
-            <label className="text-sm font-medium text-text-primary">Show filenames</label>
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 shrink">
+            <Eye size={18} className="text-brand-500 shrink-0" />
+            <label className="text-xs sm:text-sm font-medium text-text-primary truncate">Show filenames</label>
           </div>
           <button
             type="button"
             disabled={disabled}
             onClick={() => setSettings({ showFilenames: !settings.showFilenames })}
             className={cn(
-              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50",
+              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50 shrink-0",
               settings.showFilenames ? "bg-brand-500" : "bg-neutral-300 dark:bg-neutral-700"
             )}
           >

@@ -168,7 +168,7 @@ export function CreateSharePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="settings-card glass p-5 md:p-6 relative overflow-hidden premium-ring"
+            className="settings-card glass p-3.5 sm:p-5 md:p-6 relative overflow-hidden premium-ring w-full max-w-full min-w-0 box-border"
           >
             <div className="absolute inset-x-0 top-0 h-1 gradient-bg" />
             

@@ -1729,13 +1729,17 @@ html.light .receiver-download-panel {
 
 @media (max-width: 640px) {
   .site-main {
-    padding-top: 5.25rem;
+    padding-top: 5.5rem !important;
+  }
+
+  .app-page {
+    padding-top: 1rem !important;
   }
 
   .page-container,
   .page-container-wide,
   .nav-shell {
-    width: min(calc(100% - 24px), 100%);
+    width: min(calc(100% - 20px), 100%) !important;
   }
 
   .landing-hero {
@@ -1756,19 +1760,31 @@ html.light .receiver-download-panel {
   }
 
   .settings-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.75rem 0.85rem;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.5rem !important;
+    padding: 0.75rem 0.75rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
   }
 
   .settings-select {
-    min-width: 8rem;
-    max-width: 10.5rem;
-    height: 2.4rem;
-    font-size: 0.875rem;
+    min-width: 0 !important;
+    max-width: 52% !important;
+    width: auto !important;
+    padding: 0.45rem 1.85rem 0.45rem 0.65rem !important;
+    font-size: 0.8rem !important;
+    line-height: 1.25 !important;
+    height: auto !important;
+    border-radius: 0.6rem !important;
+    background-position: right 0.5rem center !important;
+    background-size: 0.85rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
   .cta-content {
@@ -1874,50 +1890,6 @@ html.light .receiver-download-panel {
   .dashboard-stats,
   .footer-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: 2.15rem;
-  }
-
-  .qr-code-frame svg {
-    width: 160px;
-    height: 160px;
-  }
-
-  .receiver-header h2 {
-    font-size: 1.65rem;
-  }
-
-  .receiver-badge {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.65rem;
-  }
-
-  .settings-row {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 0.75rem !important;
-    padding: 0.85rem 1rem !important;
-  }
-
-  .settings-select {
-    min-width: auto !important;
-    max-width: 55% !important;
-    padding-left: 0.85rem !important;
-    padding-right: 2.2rem !important;
-    padding-top: 0.55rem !important;
-    padding-bottom: 0.55rem !important;
-    font-size: 0.85rem !important;
-    line-height: 1.25 !important;
-    height: auto !important;
-    border-radius: 0.65rem !important;
-    background-position: right 0.65rem center !important;
-    background-size: 0.9rem !important;
   }
 }
 
