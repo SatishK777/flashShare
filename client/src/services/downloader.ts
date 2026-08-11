@@ -11,6 +11,8 @@ export interface DownloadProgress {
   status: 'pending' | 'downloading' | 'decrypting' | 'completed' | 'failed' | 'error';
 }
 
+const MAX_CONCURRENT_DOWNLOADS = 6;
+
 export async function downloadAndDecryptFile(
   token: string,
   fileId: string,
@@ -20,60 +22,72 @@ export async function downloadAndDecryptFile(
   encryptionKey: CryptoKey | null,
   onProgress?: (progress: DownloadProgress) => void
 ): Promise<Blob> {
-  const chunks: Uint8Array[] = [];
+  const downloadedChunksArr = new Array<Uint8Array>(chunkCount);
+  let downloadedChunksCount = 0;
   let downloadedSize = 0;
 
-  for (let i = 0; i < chunkCount; i++) {
+  const queue = Array.from({ length: chunkCount }, (_, i) => i);
+  let hasFailed = false;
+  let failureError: any = null;
+
+  async function worker() {
+    while (queue.length > 0 && !hasFailed) {
+      const i = queue.shift();
+      if (i === undefined) break;
+
+      try {
+        const response = await fetch(`${API_BASE}/shares/${token}/files/${fileId}/chunks/${i}`);
+        if (!response.ok) {
+          throw new Error(`Failed to download chunk ${i}`);
+        }
+
+        const buffer = await response.arrayBuffer();
+        let chunkData = new Uint8Array(buffer);
+
+        if (encryptionKey) {
+          const iv = new Uint8Array(chunkData.slice(0, 12));
+          const ciphertext = chunkData.slice(12);
+          const decryptedBuffer = await decryptChunk(ciphertext.buffer as ArrayBuffer, encryptionKey, iv);
+          chunkData = new Uint8Array(decryptedBuffer);
+        }
+
+        downloadedChunksArr[i] = chunkData;
+        downloadedChunksCount++;
+        downloadedSize += chunkData.length;
+
+        onProgress?.({
+          fileId,
+          fileName,
+          totalChunks: chunkCount,
+          downloadedChunks: downloadedChunksCount,
+          totalSize: fileSize,
+          downloadedSize,
+          status: downloadedChunksCount === chunkCount ? 'completed' : 'downloading',
+        });
+      } catch (error) {
+        hasFailed = true;
+        failureError = error;
+        throw error;
+      }
+    }
+  }
+
+  const workerCount = Math.min(MAX_CONCURRENT_DOWNLOADS, chunkCount);
+  const workers = Array.from({ length: workerCount }, () => worker());
+
+  await Promise.all(workers);
+
+  if (hasFailed) {
     onProgress?.({
       fileId,
       fileName,
       totalChunks: chunkCount,
-      downloadedChunks: i,
+      downloadedChunks: downloadedChunksCount,
       totalSize: fileSize,
       downloadedSize,
-      status: 'downloading',
+      status: 'failed',
     });
-
-    try {
-      const response = await fetch(`${API_BASE}/shares/${token}/files/${fileId}/chunks/${i}`);
-      if (!response.ok) {
-        throw new Error(`Failed to download chunk ${i}`);
-      }
-
-      const buffer = await response.arrayBuffer();
-      let chunkData = new Uint8Array(buffer);
-
-      onProgress?.({
-        fileId,
-        fileName,
-        totalChunks: chunkCount,
-        downloadedChunks: i + 1,
-        totalSize: fileSize,
-        downloadedSize: downloadedSize + chunkData.length,
-        status: 'decrypting',
-      });
-
-      if (encryptionKey) {
-        const iv = new Uint8Array(chunkData.slice(0, 12));
-        const ciphertext = chunkData.slice(12);
-        const decryptedBuffer = await decryptChunk(ciphertext.buffer as ArrayBuffer, encryptionKey, iv);
-        chunkData = new Uint8Array(decryptedBuffer);
-      }
-
-      chunks.push(chunkData);
-      downloadedSize += chunkData.length;
-    } catch (error) {
-      onProgress?.({
-        fileId,
-        fileName,
-        totalChunks: chunkCount,
-        downloadedChunks: i,
-        totalSize: fileSize,
-        downloadedSize,
-        status: 'failed',
-      });
-      throw error;
-    }
+    throw failureError || new Error('Download failed');
   }
 
   onProgress?.({
@@ -82,9 +96,9 @@ export async function downloadAndDecryptFile(
     totalChunks: chunkCount,
     downloadedChunks: chunkCount,
     totalSize: fileSize,
-    downloadedSize,
+    downloadedSize: fileSize,
     status: 'completed',
   });
 
-  return new Blob(chunks as BlobPart[]);
+  return new Blob(downloadedChunksArr as BlobPart[]);
 }
