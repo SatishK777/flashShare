@@ -21,7 +21,8 @@ export class DownloadService {
       throw new AppError(400, `Share is not active (status: ${share.status})`);
     }
 
-    if (share.downloadCount >= share.maxDownloads) {
+    const isUnlimited = share.maxDownloads === 0 || share.maxDownloads === -1;
+    if (!isUnlimited && share.downloadCount >= share.maxDownloads) {
       throw new AppError(403, 'Maximum download limit reached');
     }
 

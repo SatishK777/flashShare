@@ -71,7 +71,8 @@ export class ShareService {
       throw new AppError(410, `Share is no longer available (status: ${share.status})`);
     }
 
-    if (share.maxDownloads !== -1 && share.downloadCount >= share.maxDownloads) {
+    const isUnlimited = share.maxDownloads === 0 || share.maxDownloads === -1;
+    if (!isUnlimited && share.downloadCount >= share.maxDownloads) {
       if (share.status !== 'completed') {
         await shareRepository.updateStatus(share.id, 'completed');
       }
@@ -163,7 +164,8 @@ export class ShareService {
     const updatedCount = share.downloadCount + 1;
     await shareRepository.incrementDownloadCount(shareId);
 
-    const isFullyCompleted = share.maxDownloads !== -1 && updatedCount >= share.maxDownloads;
+    const isUnlimited = share.maxDownloads === 0 || share.maxDownloads === -1;
+    const isFullyCompleted = !isUnlimited && updatedCount >= share.maxDownloads;
 
     if (isFullyCompleted) {
       await shareRepository.updateStatus(shareId, 'completed');

@@ -86,9 +86,9 @@ export const initializeSocket = (httpServer: HttpServer) => {
       const result = await shareService.recordDownload(roomId);
       ioInstance.to(roomId).emit(EVENTS.DOWNLOAD_COMPLETED, {
         timestamp: new Date(),
-        downloadCount: result?.downloadCount || 1,
-        maxDownloads: result?.maxDownloads || 1,
-        isFullyCompleted: result?.isFullyCompleted ?? true,
+        downloadCount: result?.downloadCount ?? 1,
+        maxDownloads: result?.maxDownloads ?? 0,
+        isFullyCompleted: result?.isFullyCompleted ?? false,
       });
     });
 
