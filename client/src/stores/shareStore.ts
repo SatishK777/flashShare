@@ -97,6 +97,16 @@ export const useShareStore = create<ShareState>()(
     {
       name: 'flashshare-active-share',
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        shareId: state.status === 'ready' ? state.shareId : null,
+        token: state.status === 'ready' ? state.token : null,
+        encryptionKey: state.status === 'ready' ? state.encryptionKey : null,
+        shareUrl: state.status === 'ready' ? state.shareUrl : null,
+        expiresAt: state.status === 'ready' ? state.expiresAt : null,
+        createdShareTokens: state.createdShareTokens || [],
+        status: state.status === 'ready' ? 'ready' : 'idle',
+        settings: state.settings,
+      }),
     }
   )
 );

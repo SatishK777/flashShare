@@ -20,12 +20,16 @@ export function CreateSharePage() {
   const expiresAt = useShareStore(state => state.expiresAt);
   const resetShare = useShareStore(state => state.reset);
 
-  // Check if active share is expired on mount
+  // Check if active share is expired or if upload was interrupted on mount/refresh
   useEffect(() => {
     if (expiresAt && new Date(expiresAt).getTime() < Date.now()) {
       resetShare();
+      setUploading(false);
+    } else if ((status === 'uploading' || status === 'creating' || status === 'finalizing' || status === 'error') && files.length === 0) {
+      resetShare();
+      setUploading(false);
     }
-  }, [expiresAt, resetShare]);
+  }, [expiresAt, status, files.length, resetShare, setUploading]);
 
   const handleGenerate = async () => {
     try {
@@ -210,6 +214,22 @@ export function CreateSharePage() {
                 {buttonText}
               </span>
             </Button>
+
+            {(isProcessing || status === 'error') && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs text-text-secondary hover:text-error-500 border-border-primary/60 hover:bg-error-500/10 py-2.5"
+                  onClick={() => {
+                    setUploading(false);
+                    resetShare();
+                  }}
+                >
+                  Cancel Upload & Reset State
+                </Button>
+              </motion.div>
+            )}
           </motion.div>
 
           {/* Features info */}
