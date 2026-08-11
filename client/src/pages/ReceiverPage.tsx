@@ -266,6 +266,8 @@ export const ReceiverPage: React.FC = () => {
   const handleDownloadFile = async (file: ShareFile) => {
     if (!shareData || !token) return;
 
+    setProgress(null);
+    setP2pProgress(null);
     setState('downloading');
 
     try {
@@ -295,9 +297,12 @@ export const ReceiverPage: React.FC = () => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
+      setProgress(null);
       setState('completed');
     } catch (err) {
       console.error('Download failed', err);
+      setProgress(null);
+      setP2pProgress(null);
       setState('ready');
     }
   };
@@ -308,10 +313,14 @@ export const ReceiverPage: React.FC = () => {
     if (transferMode === 'p2p' && webrtcRef.current) {
       // P2P mode: The sender will initiate sending once connected. 
       // The receiver is just waiting. If we are here, we might just show connecting.
+      setProgress(null);
+      setP2pProgress(null);
       setState('downloading');
       return;
     }
 
+    setProgress(null);
+    setP2pProgress(null);
     setState('downloading');
     const socket = getSocket();
     socket.emit(SOCKET_EVENTS.DOWNLOAD_STARTED, shareData.id);
@@ -345,9 +354,12 @@ export const ReceiverPage: React.FC = () => {
       }
 
       socket.emit(SOCKET_EVENTS.DOWNLOAD_COMPLETED, shareData.id);
+      setProgress(null);
       setState('completed');
     } catch (err) {
       console.error('Download failed', err);
+      setProgress(null);
+      setP2pProgress(null);
       setState('ready');
     }
   };
@@ -490,7 +502,7 @@ export const ReceiverPage: React.FC = () => {
             </motion.div>
           )}
 
-          {(state === 'downloading' || state === 'ready') && (progress || p2pProgress) && (
+          {state === 'downloading' && (progress || p2pProgress) && (
             <motion.div
               key="downloading"
               initial={{ opacity: 0, scale: 0.95 }}
