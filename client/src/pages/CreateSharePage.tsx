@@ -103,7 +103,7 @@ export function CreateSharePage() {
 
   if (status === 'ready') {
     return (
-      <div className="page-container app-page animate-in fade-in zoom-in duration-500">
+      <div className="page-container app-page w-full max-w-full min-w-0 overflow-hidden box-border animate-in fade-in zoom-in duration-500">
         <QRDisplay />
       </div>
     );
