@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Lock, Clock, CheckCircle, Download, File, Image as ImageIcon, Video, FileText, Music, Archive, Wifi, Cloud } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { importKey } from '../services/encryption';
-import { downloadAndDecryptFile, DownloadProgress } from '../services/downloader';
+import { downloadAndSaveFile, DownloadProgress } from '../services/downloader';
 import { formatBytes } from '../components/upload/FileList';
 import { joinRoom, leaveRoom, getSocket, SOCKET_EVENTS } from '../services/socket';
 import { WebRTCTransfer, isWebRTCSupported, P2PTransferProgress } from '../services/webrtc';
@@ -277,30 +277,23 @@ export const ReceiverPage: React.FC = () => {
       }
 
       const fileSize = parseInt(file.size, 10);
-      const blob = await downloadAndDecryptFile(
+      await downloadAndSaveFile(
         token,
         file.id,
         file.originalName,
         fileSize,
         file.chunkCount,
+        file.mimeType,
         cryptoKey,
         (prog) => setProgress(prog)
       );
 
-      // Trigger browser download
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = file.originalName || 'download';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
       setProgress(null);
       setState('completed');
-    } catch (err) {
-      console.error('Download failed', err);
+    } catch (err: any) {
+      if (err?.message !== 'Save cancelled by user') {
+        console.error('Download failed', err);
+      }
       setProgress(null);
       setP2pProgress(null);
       setState('ready');
@@ -333,31 +326,25 @@ export const ReceiverPage: React.FC = () => {
 
       for (const file of shareData.files) {
         const fileSize = parseInt(file.size, 10);
-        const blob = await downloadAndDecryptFile(
+        await downloadAndSaveFile(
           token,
           file.id,
           file.originalName,
           fileSize,
           file.chunkCount,
+          file.mimeType,
           cryptoKey,
           (prog) => setProgress(prog)
         );
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file.originalName || 'download';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
       }
 
       socket.emit(SOCKET_EVENTS.DOWNLOAD_COMPLETED, shareData.id);
       setProgress(null);
       setState('completed');
-    } catch (err) {
-      console.error('Download failed', err);
+    } catch (err: any) {
+      if (err?.message !== 'Save cancelled by user') {
+        console.error('Download failed', err);
+      }
       setProgress(null);
       setP2pProgress(null);
       setState('ready');
