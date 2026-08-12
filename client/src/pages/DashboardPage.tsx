@@ -334,9 +334,9 @@ export const DashboardPage: React.FC = () => {
       >
         <div>
           <h1>
-            <span className="gradient-text">Dashboard</span>
+            <span className="gradient-text">Device Dashboard</span>
           </h1>
-          <p>Real-time analytics and active shares management</p>
+          <p>Device-scoped analytics for shares created on this browser</p>
         </div>
         
         <div className="dashboard-refresh-badge shrink-0">
