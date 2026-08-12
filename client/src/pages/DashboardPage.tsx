@@ -291,20 +291,36 @@ export const DashboardPage: React.FC = () => {
   const createdShareTokens = useShareStore((state) => state.createdShareTokens) || [];
   const activeShareToken = useShareStore((state) => state.token);
   const activeShareId = useShareStore((state) => state.shareId);
+
+  // Combine tokens & IDs for device-isolated batch query
+  const allMyTokens = Array.from(new Set([
+    ...createdShareTokens,
+    ...(activeShareToken ? [activeShareToken] : []),
+    ...(activeShareId ? [activeShareId] : [])
+  ]));
+
+  const { data: myActiveSharesList = [] } = useQuery<ActiveShareItem[]>({
+    queryKey: ['my-active-shares', allMyTokens],
+    queryFn: async () => {
+      if (allMyTokens.length === 0) return [];
+      const res = await fetch(`${API_BASE}/shares/batch`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tokens: allMyTokens }),
+      });
+      if (!res.ok) return [];
+      const json = await res.json();
+      return json.data || [];
+    },
+    enabled: allMyTokens.length > 0,
+    refetchInterval: 10000,
+  });
+
   const myRecentActivity = (data?.recentActivity || []).filter((event) =>
-    createdShareTokens.some(
+    allMyTokens.some(
       (t) => t === event.shareId || event.shareId.startsWith(t) || t.startsWith(event.shareId)
     )
   );
-
-  const myActiveSharesList = (data?.activeSharesList || []).filter((share) => {
-    return (
-      createdShareTokens.includes(share.token) ||
-      createdShareTokens.includes(share.id) ||
-      share.token === activeShareToken ||
-      share.id === activeShareId
-    );
-  });
 
   const myTotalDownloads = myActiveSharesList.reduce((sum, share) => sum + (share.downloadCount || 0), 0);
 

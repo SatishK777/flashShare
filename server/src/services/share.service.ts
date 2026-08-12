@@ -186,6 +186,18 @@ export class ShareService {
       isFullyCompleted,
     };
   }
+
+  async getBatchShares(tokensOrIds: string[]) {
+    const shares = await shareRepository.findBatchByTokensOrIds(tokensOrIds);
+    return shares.map((share) => ({
+      ...share,
+      totalSize: share.totalSize ? share.totalSize.toString() : '0',
+      files: share.files.map((file) => ({
+        ...file,
+        size: file.size ? file.size.toString() : '0',
+      })),
+    }));
+  }
 }
 
 export const shareService = new ShareService();

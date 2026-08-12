@@ -79,6 +79,22 @@ export class ShareRepository {
     }) as Promise<ShareRecord>;
   }
 
+  async findBatchByTokensOrIds(tokensOrIds: string[]): Promise<ShareWithFiles[]> {
+    if (!tokensOrIds || tokensOrIds.length === 0) return [];
+    return prisma.share.findMany({
+      where: {
+        status: 'active',
+        expiresAt: { gt: new Date() },
+        OR: [
+          { token: { in: tokensOrIds } },
+          { id: { in: tokensOrIds } },
+        ],
+      },
+      include: { files: true },
+      orderBy: { createdAt: 'desc' },
+    }) as Promise<ShareWithFiles[]>;
+  }
+
   async findActive(): Promise<ShareRecord[]> {
     return prisma.share.findMany({
       where: {

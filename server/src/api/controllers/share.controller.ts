@@ -60,3 +60,13 @@ export const cancelShare = async (req: Request, res: Response, next: NextFunctio
     next(error);
   }
 };
+
+export const getBatchShares = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { tokens } = req.body;
+    const data = await shareService.getBatchShares(Array.isArray(tokens) ? tokens : []);
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -89,33 +89,6 @@ export const analyticsService = {
       },
     });
 
-    const activeSharesRaw = await prisma.share.findMany({
-      where: {
-        status: 'active',
-        expiresAt: { gt: new Date() },
-      },
-      include: {
-        files: {
-          select: {
-            id: true,
-            originalName: true,
-            size: true,
-            mimeType: true,
-          },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 20,
-    });
-
-    const activeSharesList = activeSharesRaw.map((share) => ({
-      ...share,
-      files: share.files.map((file) => ({
-        ...file,
-        size: file.size ? file.size.toString() : '0',
-      })),
-    }));
-
     const totalDownloads = await prisma.download.count({
       where: { status: 'completed' },
     });
@@ -131,7 +104,6 @@ export const analyticsService = {
     return {
       totalShares,
       activeShares,
-      activeSharesList,
       totalDownloads,
       totalBandwidth,
       recentActivity,
