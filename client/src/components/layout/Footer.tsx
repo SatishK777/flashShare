@@ -6,7 +6,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="site-footer relative z-10">
       <div className="page-container-wide">
-        <div className="footer-grid mb-12">
+        <div className="footer-grid">
           <div className="footer-brand">
             <Link to="/" className="footer-brand-link">
               <span className="footer-brand-mark">
