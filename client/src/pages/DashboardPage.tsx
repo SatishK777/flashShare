@@ -313,7 +313,7 @@ export const DashboardPage: React.FC = () => {
       return json.data || [];
     },
     enabled: allMyTokens.length > 0,
-    refetchInterval: 10000,
+    refetchInterval: 15000,
   });
 
   const handleRevokeShare = () => {
@@ -346,7 +346,7 @@ export const DashboardPage: React.FC = () => {
         
         <div className="dashboard-refresh-badge shrink-0">
           <RefreshCw size={14} className={isFetching ? "animate-spin text-brand-500" : ""} />
-          <span>Auto-refreshing every 10s</span>
+          <span>Auto-refreshing every 15s</span>
         </div>
       </motion.div>
 
