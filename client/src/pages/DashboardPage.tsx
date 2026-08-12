@@ -306,6 +306,8 @@ export const DashboardPage: React.FC = () => {
     );
   });
 
+  const myTotalDownloads = myActiveSharesList.reduce((sum, share) => sum + (share.downloadCount || 0), 0);
+
   return (
     <div className="page-container-wide app-page">
       <motion.div
@@ -394,7 +396,7 @@ export const DashboardPage: React.FC = () => {
                 <div>
                   <h3 className="font-medium text-text-secondary text-sm uppercase tracking-wider mb-1">Total Downloads</h3>
                   <div className="text-4xl font-display font-bold text-text-primary">
-                    {data.totalDownloads}
+                    {myTotalDownloads}
                   </div>
                 </div>
               </div>
