@@ -243,16 +243,16 @@ export const LandingPage: React.FC = () => {
                   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-500 via-accent-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
                   <div>
-                    <div className="flex items-center justify-between gap-4 mb-4">
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[var(--bg-tertiary)] flex items-center justify-center group-hover:scale-110 group-hover:bg-brand-500 group-hover:text-white transition-all duration-300 border border-[var(--border-glass)] text-brand-500 shadow-sm shrink-0">
+                    <div className="flex items-center justify-between gap-4 mb-6">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[var(--bg-tertiary)] flex items-center justify-center group-hover:scale-105 group-hover:bg-brand-500 group-hover:text-white transition-all duration-300 border border-[var(--border-glass)] text-brand-500 shadow-sm shrink-0">
                         <feat.icon className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover:rotate-6" />
                       </div>
-                      <span className={`inline-flex items-center justify-center text-xs font-semibold px-3 py-1 rounded-full border ${feat.badgeStyle} whitespace-nowrap leading-none shrink-0`}>
+                      <span className={`inline-flex items-center justify-center text-xs font-semibold px-3.5 py-1.5 rounded-full border ${feat.badgeStyle} whitespace-nowrap leading-snug shrink-0 tracking-wide`}>
                         {feat.badge}
                       </span>
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-bold font-display mb-2 text-[var(--text-primary)] group-hover:text-brand-500 transition-colors duration-300">
+                    <h3 className="text-lg sm:text-xl font-bold font-display mb-2.5 text-[var(--text-primary)] group-hover:text-brand-500 transition-colors duration-300">
                       {feat.title}
                     </h3>
                     <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
