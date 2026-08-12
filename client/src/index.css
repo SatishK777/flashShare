@@ -1039,13 +1039,13 @@ html.light .site-footer {
   right: 0 !important;
   z-index: 50 !important;
   padding: 1.75rem 1.75rem 2.5rem 1.75rem !important;
-  background: rgba(13, 18, 26, 0.96) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+  background: var(--bg-glass-strong) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
   border-bottom: 1px solid var(--border-glass) !important;
   border-bottom-left-radius: 2rem !important;
   border-bottom-right-radius: 2rem !important;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25) !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 1.25rem !important;

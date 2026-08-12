@@ -160,15 +160,15 @@ export const Navbar: React.FC = () => {
                       onClick={() => setMobileMenuOpen(false)} 
                       className={`flex items-center justify-between p-3.5 rounded-xl transition-all font-display font-semibold ${
                         isActive 
-                          ? 'bg-brand-500/10 text-brand-500 border border-brand-500/25 shadow-sm' 
+                          ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/25 shadow-sm' 
                           : 'text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] border border-transparent'
                       }`}
                     >
                       <div className="flex items-center gap-3.5">
-                        <div className={`p-2 rounded-lg ${isActive ? 'bg-brand-500/20 text-brand-400' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`}>
+                        <div className={`p-2 rounded-lg ${isActive ? 'bg-brand-500/20 text-brand-600 dark:text-brand-400' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`}>
                           <Icon className="w-5 h-5" />
                         </div>
-                        <span className="text-base">{link.name}</span>
+                        <span className="text-base text-[var(--text-primary)] font-bold">{link.name}</span>
                       </div>
                       <ChevronRight className={`w-4 h-4 ${isActive ? 'text-brand-500' : 'text-[var(--text-tertiary)]'}`} />
                     </Link>
