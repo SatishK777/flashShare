@@ -51,7 +51,7 @@ export const analyticsRepository = {
       take: limit,
       include: {
         share: {
-          select: { id: true, token: true },
+          select: { id: true },
         },
       },
     });
