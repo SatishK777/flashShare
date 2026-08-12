@@ -14,10 +14,15 @@ export const analyticsController = {
 
   async getDashboard(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await analyticsService.getDashboardStats();
-      // Ensure BigInts are converted before JSON serialization if any sneaked in
-      // Actually express res.json handles plain objects but fails on BigInt. 
-      // We converted totalBandwidth to Number in service, so it should be fine.
+      let tokens: string[] = [];
+      if (req.body && Array.isArray(req.body.tokens)) {
+        tokens = req.body.tokens;
+      } else if (req.query.tokens) {
+        const raw = req.query.tokens as string;
+        tokens = raw.split(',').map((t) => t.trim()).filter(Boolean);
+      }
+
+      const data = await analyticsService.getDashboardStats(tokens);
       res.json({ success: true, data });
     } catch (error) {
       next(error);

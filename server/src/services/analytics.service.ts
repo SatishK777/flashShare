@@ -1,105 +1,107 @@
-import { AppError } from '../api/middlewares/errorHandler.js';
-import { analyticsRepository } from '../repositories/analytics.repository.js';
-import { shareRepository } from '../repositories/share.repository.js';
 import { prisma } from '../config/database.js';
-import { logger } from '../utils/logger.js';
 
-export const analyticsService = {
+export class AnalyticsService {
+  /**
+   * Log an analytics event for a share
+   */
   async logEvent(
     shareId: string,
-    eventType: string,
-    metadata?: any,
+    eventType: 'share_viewed' | 'share_created' | 'download_started' | 'download_completed',
+    metadata?: unknown,
     ipHash?: string,
     userAgent?: string
   ) {
-    try {
-      await analyticsRepository.create({
+    return prisma.analyticsEvent.create({
+      data: {
         shareId,
         eventType,
-        metadata,
-        ipHash,
+        metadata: metadata ? JSON.stringify(metadata) : undefined,
+        ipHash: ipHash || 'unknown',
         userAgent,
-      });
-      logger.info(`Logged event ${eventType} for share ${shareId}`);
-    } catch (error) {
-      logger.error('Failed to log analytics event', { shareId, eventType, error });
-    }
-  },
+      },
+    });
+  }
 
+  /**
+   * Get analytics for a specific share
+   */
   async getShareAnalytics(shareId: string) {
-    const share = await shareRepository.findById(shareId);
-    if (!share) {
-      throw new AppError(404, 'Share not found');
-    }
-
-    // totalScans is the number of 'share_viewed' events
-    const totalScans = await prisma.analyticsEvent.count({
-      where: { shareId, eventType: 'share_viewed' },
-    });
-
-    const totalDownloads = await prisma.download.count({
-      where: { shareId, status: 'completed' },
-    });
-
-    const uniqueVisitorsResult = await prisma.analyticsEvent.findMany({
+    const events = await prisma.analyticsEvent.findMany({
       where: { shareId },
-      select: { ipHash: true },
-      distinct: ['ipHash'],
+      orderBy: { createdAt: 'desc' },
     });
-    // Filter out nulls
-    const uniqueVisitors = uniqueVisitorsResult.filter((v: { ipHash: string | null }) => v.ipHash).length;
 
-    // Downloads by day using raw query or group by
-    // Prisma group by date is a bit tricky, but we can do:
-    const downloads = await prisma.download.findMany({
-      where: { shareId, status: 'completed' },
-      select: { completedAt: true },
-    });
-    
-    const downloadsByDayMap = new Map<string, number>();
-    for (const d of downloads) {
-      if (d.completedAt) {
-        const date = d.completedAt.toISOString().split('T')[0];
-        downloadsByDayMap.set(date, (downloadsByDayMap.get(date) || 0) + 1);
-      }
-    }
-    const downloadsByDay = Array.from(downloadsByDayMap.entries()).map(([date, count]) => ({ date, count }));
-    
-    // Sort chronologically
-    downloadsByDay.sort((a, b) => a.date.localeCompare(b.date));
-
-    const events = await analyticsRepository.findByShareId(shareId);
+    const views = events.filter((e) => e.eventType === 'share_viewed').length;
+    const downloadStarts = events.filter((e) => e.eventType === 'download_started').length;
+    const downloadCompletes = events.filter((e) => e.eventType === 'download_completed').length;
 
     return {
-      totalScans,
-      totalDownloads,
-      uniqueVisitors,
-      downloadsByDay,
+      shareId,
+      totalEvents: events.length,
+      views,
+      downloadStarts,
+      downloadCompletes,
       events,
     };
-  },
+  }
 
-  async getDashboardStats() {
-    const totalShares = await prisma.share.count();
-    
-    const activeShares = await prisma.share.count({
+  /**
+   * Get device-scoped dashboard statistics for a specific set of share tokens/ids
+   */
+  async getDashboardStats(tokens: string[] = []) {
+    if (!tokens || tokens.length === 0) {
+      return {
+        totalShares: 0,
+        activeShares: 0,
+        totalDownloads: 0,
+        totalBandwidth: 0,
+        recentActivity: [],
+      };
+    }
+
+    const myShares = await prisma.share.findMany({
       where: {
-        status: 'active',
-        expiresAt: { gt: new Date() },
+        OR: [
+          { token: { in: tokens } },
+          { id: { in: tokens } },
+        ],
+      },
+      select: { id: true, status: true, expiresAt: true },
+    });
+
+    const shareIds = myShares.map((s) => s.id);
+
+    const totalShares = myShares.length;
+    const activeShares = myShares.filter((s) => s.status === 'active' && new Date(s.expiresAt) > new Date()).length;
+
+    const totalDownloads = await prisma.download.count({
+      where: {
+        shareId: { in: shareIds },
+        status: 'completed',
       },
     });
 
-    const totalDownloads = await prisma.download.count({
-      where: { status: 'completed' },
-    });
-
     const bandwidthResult = await prisma.download.aggregate({
-      where: { status: 'completed' },
+      where: {
+        shareId: { in: shareIds },
+        status: 'completed',
+      },
       _sum: { bytesDownloaded: true },
     });
     const totalBandwidth = Number(bandwidthResult._sum.bytesDownloaded || 0);
 
-    const recentActivity = await analyticsRepository.getRecentEvents(20);
+    const recentActivity = await prisma.analyticsEvent.findMany({
+      where: {
+        shareId: { in: shareIds },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+      include: {
+        share: {
+          select: { id: true },
+        },
+      },
+    });
 
     return {
       totalShares,
@@ -108,5 +110,7 @@ export const analyticsService = {
       totalBandwidth,
       recentActivity,
     };
-  },
-};
+  }
+}
+
+export const analyticsService = new AnalyticsService();

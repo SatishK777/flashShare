@@ -273,31 +273,31 @@ export const DashboardPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [activeSharesOpen, setActiveSharesOpen] = useState(false);
 
+  const createdShareTokens = useShareStore((state) => state.createdShareTokens) || [];
+  const activeShareToken = useShareStore((state) => state.token);
+  const activeShareId = useShareStore((state) => state.shareId);
+
+  // Combine tokens & IDs for device-isolated query
+  const allMyTokens = Array.from(new Set([
+    ...createdShareTokens,
+    ...(activeShareToken ? [activeShareToken] : []),
+    ...(activeShareId ? [activeShareId] : [])
+  ]));
+
   const { data, isLoading, isError, isFetching } = useQuery<DashboardData>({
-    queryKey: ['dashboard'],
+    queryKey: ['dashboard', allMyTokens],
     queryFn: async () => {
-      const res = await fetch(`${API_BASE}/dashboard`);
+      const res = await fetch(`${API_BASE}/dashboard`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tokens: allMyTokens }),
+      });
       if (!res.ok) throw new Error('Failed to fetch dashboard data');
       const json = await res.json();
       return json.data;
     },
     refetchInterval: 10000,
   });
-
-  const handleRevokeShare = () => {
-    queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-  };
-
-  const createdShareTokens = useShareStore((state) => state.createdShareTokens) || [];
-  const activeShareToken = useShareStore((state) => state.token);
-  const activeShareId = useShareStore((state) => state.shareId);
-
-  // Combine tokens & IDs for device-isolated batch query
-  const allMyTokens = Array.from(new Set([
-    ...createdShareTokens,
-    ...(activeShareToken ? [activeShareToken] : []),
-    ...(activeShareId ? [activeShareId] : [])
-  ]));
 
   const { data: myActiveSharesList = [] } = useQuery<ActiveShareItem[]>({
     queryKey: ['my-active-shares', allMyTokens],
@@ -315,6 +315,11 @@ export const DashboardPage: React.FC = () => {
     enabled: allMyTokens.length > 0,
     refetchInterval: 10000,
   });
+
+  const handleRevokeShare = () => {
+    queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    queryClient.invalidateQueries({ queryKey: ['my-active-shares'] });
+  };
 
   const myRecentActivity = (data?.recentActivity || []).filter((event) =>
     allMyTokens.some(
