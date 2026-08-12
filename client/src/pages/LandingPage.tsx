@@ -194,20 +194,71 @@ export const LandingPage: React.FC = () => {
 
           <div className="features-grid">
             {[
-              { icon: Shield, title: 'End-to-End Encrypted', desc: 'Your files are encrypted in the browser before being transferred. We never see your data.' },
-              { icon: Wifi, title: 'Peer-to-Peer Transfer', desc: 'Files go directly from device to device when on the same network for lightning speeds.' },
-              { icon: RefreshCw, title: 'Resume Downloads', desc: 'Connection dropped? Pick up right where you left off without restarting the transfer.' },
-              { icon: HardDrive, title: 'No Size Limits', desc: 'Share 1MB or 50GB. The only limit is your local storage space.' },
-              { icon: Timer, title: 'Self Destructing', desc: 'Transfer links and data automatically expire after the transfer is complete.' },
-              { icon: Activity, title: 'Real-Time Status', desc: 'Watch the transfer progress live on both devices with detailed metrics.' }
+              { 
+                icon: Shield, 
+                title: 'End-to-End Encrypted', 
+                desc: 'Your files are encrypted in the browser before being transferred. We never see your data.',
+                badge: 'Zero-Knowledge',
+                badgeStyle: 'bg-cyan-500/10 text-cyan-500 dark:text-cyan-400 border-cyan-500/25'
+              },
+              { 
+                icon: Wifi, 
+                title: 'Peer-to-Peer Transfer', 
+                desc: 'Files go directly from device to device when on the same network for lightning speeds.',
+                badge: 'Direct Handoff',
+                badgeStyle: 'bg-brand-500/10 text-brand-600 dark:text-brand-400 border-brand-500/25'
+              },
+              { 
+                icon: RefreshCw, 
+                title: 'Resume Downloads', 
+                desc: 'Connection dropped? Pick up right where you left off without restarting the transfer.',
+                badge: 'Fault Tolerant',
+                badgeStyle: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/25'
+              },
+              { 
+                icon: HardDrive, 
+                title: 'No Size Limits', 
+                desc: 'Share 1MB or 50GB. The only limit is your local storage space.',
+                badge: 'Unlimited',
+                badgeStyle: 'bg-accent-500/10 text-accent-600 dark:text-accent-400 border-accent-500/25'
+              },
+              { 
+                icon: Timer, 
+                title: 'Self Destructing', 
+                desc: 'Transfer links and data automatically expire after the transfer is complete.',
+                badge: 'Auto Expire',
+                badgeStyle: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25'
+              },
+              { 
+                icon: Activity, 
+                title: 'Real-Time Status', 
+                desc: 'Watch the transfer progress live on both devices with detailed metrics.',
+                badge: 'Live Telemetry',
+                badgeStyle: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
+              }
             ].map((feat, idx) => (
-              <FadeIn key={idx} delay={idx * 0.1}>
-                <div className="feature-card h-full glass p-6 hover:border-brand-500/40 hover:glow-lg transition-all duration-500 group">
-                  <div className="w-11 h-11 rounded-lg bg-[var(--bg-tertiary)] flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-brand-500/10 transition-all duration-300 border border-[var(--border-glass)]">
-                    <feat.icon className="w-6 h-6 text-brand-500" />
+              <FadeIn key={idx} delay={idx * 0.08}>
+                <div className="feature-card h-full glass p-6 hover:border-brand-500/40 transition-all duration-500 group relative overflow-hidden flex flex-col justify-between rounded-2xl">
+                  {/* Top glowing accent line on hover */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-500 via-accent-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div>
+                    <div className="flex items-center justify-between gap-3 mb-5">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--bg-tertiary)] flex items-center justify-center group-hover:scale-110 group-hover:bg-brand-500 group-hover:text-white transition-all duration-300 border border-[var(--border-glass)] text-brand-500 shadow-sm">
+                        <feat.icon className="w-6 h-6 transition-transform duration-300 group-hover:rotate-6" />
+                      </div>
+                      <span className={`text-[11px] font-extrabold px-3 py-1 rounded-full border ${feat.badgeStyle} uppercase tracking-wider`}>
+                        {feat.badge}
+                      </span>
+                    </div>
+
+                    <h3 className="text-lg sm:text-xl font-bold font-display mb-2.5 text-[var(--text-primary)] group-hover:text-brand-500 transition-colors duration-300">
+                      {feat.title}
+                    </h3>
+                    <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                      {feat.desc}
+                    </p>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-[var(--text-primary)]">{feat.title}</h3>
-                  <p className="text-[var(--text-secondary)] leading-relaxed">{feat.desc}</p>
                 </div>
               </FadeIn>
             ))}
