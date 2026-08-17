@@ -11,13 +11,18 @@ export class MinioAdapter implements IStorageProvider {
   private bucket: string;
 
   constructor() {
-    this.bucket = env.STORAGE_BUCKET;
+    this.bucket = (env.STORAGE_BUCKET || '').trim();
+    const endpoint = (env.STORAGE_ENDPOINT || '').trim().replace(/\/$/, '');
+    const accessKeyId = (env.STORAGE_ACCESS_KEY || '').trim();
+    const secretAccessKey = (env.STORAGE_SECRET_KEY || '').trim();
+    const region = (env.STORAGE_REGION || 'us-east-1').trim();
+
     this.client = new S3Client({
-      endpoint: env.STORAGE_ENDPOINT,
-      region: env.STORAGE_REGION,
+      endpoint,
+      region,
       credentials: {
-        accessKeyId: env.STORAGE_ACCESS_KEY,
-        secretAccessKey: env.STORAGE_SECRET_KEY,
+        accessKeyId,
+        secretAccessKey,
       },
       forcePathStyle: true, // Required for MinIO
     });
